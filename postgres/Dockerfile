@@ -5,6 +5,6 @@ ENV POSTGRES_PASSWORD=password
 ENV POSTGRES_DB=mydatabase
 
 # A changer, a therme charger le script sql de l'etl ici
-COPY ./initdb /docker-entrypoint-initdb.d/
+COPY ./database/initdb /docker-entrypoint-initdb.d/
 
 EXPOSE 5432

@@ -17,4 +17,4 @@ ENV PATH="$SPARK_HOME/bin:$PATH"
 WORKDIR /app
 COPY . .
 
-CMD ["bash"]
+CMD ["python3", "script_etl.py"]

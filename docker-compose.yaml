@@ -1,0 +1,39 @@
+version: "3.9"
+services:
+  etl:
+    build:
+      context: ./etl
+      dockerfile: Dockerfile
+    container_name: etl-service
+    depends_on:
+      - postgres
+    volumes:
+      - ./etl:/app  # Volume pour monter les fichiers ETL
+    environment:
+      - SPARK_HOME=/opt/spark-3.4.4-bin-hadoop3
+      - PATH=$SPARK_HOME/bin:$PATH
+    networks:
+      - etl_network
+
+  postgres:
+    build:
+      context: ./postgres
+      dockerfile: Dockerfile
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/database:/docker-entrypoint-initdb.d
+    networks:
+      - etl_network
+
+volumes:
+  postgres_data:
+
+networks:
+  etl_network:

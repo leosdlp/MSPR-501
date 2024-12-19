@@ -2,7 +2,7 @@ FROM openjdk:11-jdk-slim
 
 # Installer Python, pip, curl, et les bibliothèques nécessaires (PySpark, Matplotlib, et Requests)
 RUN apt-get update && apt-get install -y python3 python3-pip curl && \
-    pip3 install pyspark matplotlib requests && \
+    pip3 install pyspark matplotlib requests pandas dash && \
     apt-get clean
 
 # Télécharger Spark

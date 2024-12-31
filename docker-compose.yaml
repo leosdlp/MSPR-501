@@ -23,7 +23,7 @@ services:
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydatabase
+      POSTGRES_DB: projet_mspr
     ports:
       - "5432:5432"
     volumes:

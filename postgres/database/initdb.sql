@@ -7,10 +7,10 @@ END $$;
 
 \c projet_mspr
 
-CREATE TABLE pandemic(
-   id_pandemic SERIAL,
+CREATE TABLE disease(
+   id_disease SERIAL,
    name VARCHAR(50)  NOT NULL,
-   PRIMARY KEY(id_pandemic)
+   PRIMARY KEY(id_disease)
 );
 
 CREATE TABLE statement(
@@ -24,9 +24,9 @@ CREATE TABLE statement(
    new_deaths INTEGER NOT NULL,
    new_cases INTEGER NOT NULL,
    new_recovered INTEGER NOT NULL,
-   id_pandemic INTEGER NOT NULL,
+   id_disease INTEGER NOT NULL,
    PRIMARY KEY(id_statement),
-   FOREIGN KEY(id_pandemic) REFERENCES pandemic(id_pandemic)
+   FOREIGN KEY(id_disease) REFERENCES disease(id_disease)
 );
 
 CREATE TABLE region(

@@ -7,11 +7,67 @@ END $$;
 
 \c projet_mspr
 
-CREATE TABLE IF NOT EXISTS mytable (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+CREATE TABLE pandemic(
+   id_pandemic SERIAL,
+   name VARCHAR(50)  NOT NULL,
+   PRIMARY KEY(id_pandemic)
 );
 
-INSERT INTO mytable (name) VALUES ('John Doe');
-INSERT INTO mytable (name) VALUES ('Jane Smith');
-INSERT INTO mytable (name) VALUES ('Alice Johnson');
+CREATE TABLE statement(
+   id_statement SERIAL,
+   _date DATE NOT NULL,
+   confirmed INTEGER NOT NULL,
+   deaths INTEGER NOT NULL,
+   recovered INTEGER NOT NULL,
+   active INTEGER NOT NULL,
+   total_tests INTEGER,
+   new_deaths INTEGER NOT NULL,
+   new_cases INTEGER NOT NULL,
+   new_recovered INTEGER NOT NULL,
+   id_pandemic INTEGER NOT NULL,
+   PRIMARY KEY(id_statement),
+   FOREIGN KEY(id_pandemic) REFERENCES pandemic(id_pandemic)
+);
+
+CREATE TABLE region(
+   id_region SERIAL,
+   name VARCHAR(50)  NOT NULL,
+   population INTEGER,
+   PRIMARY KEY(id_region)
+);
+
+CREATE TABLE city(
+   id_city SERIAL,
+   latitude NUMERIC(15,10)   NOT NULL,
+   longitude NUMERIC(15,15)   NOT NULL,
+   name VARCHAR(50)  NOT NULL,
+   population INTEGER,
+   PRIMARY KEY(id_city)
+);
+
+CREATE TABLE continent(
+   id_continent SERIAL,
+   name VARCHAR(50)  NOT NULL,
+   PRIMARY KEY(id_continent)
+);
+
+CREATE TABLE country(
+   id_country SERIAL,
+   name VARCHAR(50)  NOT NULL,
+   population INTEGER NOT NULL,
+   id_continent INTEGER NOT NULL,
+   PRIMARY KEY(id_country),
+   FOREIGN KEY(id_continent) REFERENCES continent(id_continent)
+);
+
+CREATE TABLE place_statement(
+   id_country INTEGER,
+   id_statement INTEGER,
+   id_region INTEGER,
+   id_city INTEGER,
+   PRIMARY KEY(id_country, id_statement, id_region, id_city),
+   FOREIGN KEY(id_country) REFERENCES country(id_country),
+   FOREIGN KEY(id_statement) REFERENCES statement(id_statement),
+   FOREIGN KEY(id_region) REFERENCES region(id_region),
+   FOREIGN KEY(id_city) REFERENCES city(id_city)
+);

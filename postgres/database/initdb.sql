@@ -39,8 +39,8 @@ CREATE TABLE region(
 
 CREATE TABLE city(
    id_city SERIAL,
-   latitude NUMERIC(15,10)   NOT NULL,
-   longitude NUMERIC(15,15)   NOT NULL,
+   latitude NUMERIC(14,7)   NOT NULL,
+   longitude NUMERIC(14,7)   NOT NULL,
    name VARCHAR(50)  NOT NULL,
    population INTEGER,
    PRIMARY KEY(id_city)

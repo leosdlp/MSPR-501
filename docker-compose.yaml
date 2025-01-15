@@ -4,11 +4,11 @@ services:
     build:
       context: ./etl
       dockerfile: Dockerfile
-    container_name: etl-service
+    container_name: mspr501_etl-service
     depends_on:
       - postgres
     volumes:
-      - ./etl:/app  # Volume pour monter les fichiers ETL
+      - ./etl:/app
     environment:
       - SPARK_HOME=/opt/spark-3.4.4-bin-hadoop3
       - PATH=$SPARK_HOME/bin:$PATH
@@ -19,16 +19,32 @@ services:
     build:
       context: ./postgres
       dockerfile: Dockerfile
-    container_name: postgres-db
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: projet_mspr
+    container_name: mspr501_postgres-db
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./postgres/database:/docker-entrypoint-initdb.d
+    networks:
+      - etl_network
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: mspr501_api-flask
+    ports:
+      - "5000:5000"
+    networks:
+      - etl_network
+
+  phppgadmin:
+    build:
+      context: ./phppgadmin
+      dockerfile: Dockerfile
+    container_name: mspr501_phpPgAdmin
+    ports:
+      - "8080:80"
     networks:
       - etl_network
 

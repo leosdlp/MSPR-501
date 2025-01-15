@@ -1,12 +1,3 @@
-DO $$ 
-BEGIN
-   IF NOT EXISTS (SELECT FROM pg_database WHERE datname = 'projet_mspr') THEN
-      CREATE DATABASE projet_mspr;
-   END IF;
-END $$;
-
-\c projet_mspr
-
 CREATE TABLE disease(
    id_disease SERIAL,
    name VARCHAR(50)  NOT NULL,
@@ -94,3 +85,58 @@ CREATE TABLE place_statement(
    FOREIGN KEY(id_region) REFERENCES region(id_region),
    FOREIGN KEY(id_city) REFERENCES city(id_city)
 );
+
+-- Jeux de données
+
+INSERT INTO disease (name, is_pandemic) VALUES
+('COVID-19', TRUE),
+('Grippe', FALSE),
+('Ebola', TRUE),
+('Varicelle', FALSE);
+
+INSERT INTO statement (_date, confirmed, deaths, recovered, active, total_tests, new_deaths, new_cases, new_recovered, id_disease) VALUES
+('2025-01-01', 1000000, 50000, 900000, 50000, 5000000, 1000, 5000, 7000, 1),
+('2025-01-02', 1005000, 50500, 905000, 50000, 5050000, 1500, 6000, 7500, 2),
+('2025-01-03', 500000, 3000, 450000, 50000, 1000000, 200, 2000, 2500, 3),
+('2025-01-04', 200000, 1000, 190000, 9000, 2000000, 100, 1000, 1500, 4);
+
+INSERT INTO region (name, population) VALUES
+('Europe', 741400000),
+('Afrique', 1340000000),
+('Amérique du Nord', 579024000);
+
+INSERT INTO city (latitude, longitude, name, population) VALUES
+(48.8566, 2.3522, 'Paris', 2148327),
+(34.0522, -118.2437, 'Los Angeles', 3979576),
+(40.7128, -74.0060, 'New York', 8419600);
+
+INSERT INTO continent (name) VALUES
+('Europe'),
+('Afrique'),
+('Amérique du Nord'),
+('Asie'),
+('Océanie');
+
+INSERT INTO climat_type (name, description) VALUES
+('Tropical', 'Chaud et humide, avec des pluies abondantes'),
+('Tempéré', 'Saisons distinctes, étés modérés et hivers froids'),
+('Désertique', 'Climat sec avec peu de pluie'),
+('Polaire', 'Très froid, peu de végétation');
+
+INSERT INTO country (name, population, pib, id_climat_type, id_continent) VALUES
+('France', 67390000, 2700000000000, 2, 1),
+('USA', 331000000, 23000000000000, 2, 3),
+('Chine', 1393400000, 14000000000000, 1, 4),
+('Brésil', 211000000, 2200000000000, 1, 2);
+
+INSERT INTO weather_report (date_start, date_end, average_temperature, average_wind_velocity, humidity_level, id_country) VALUES
+('2025-01-01', '2025-01-02', 15.5, 10.2, 60.0, 1),
+('2025-01-02', '2025-01-03', 22.0, 12.5, 50.0, 2),
+('2025-01-03', '2025-01-04', 18.0, 5.0, 70.0, 3),
+('2025-01-04', '2025-01-05', 30.0, 8.0, 40.0, 4);
+
+INSERT INTO place_statement (id_country, id_statement, id_region, id_city) VALUES
+(1, 1, 1, 1),
+(2, 2, 2, 2),
+(3, 3, 3, 3),
+(4, 4, 2, 2);

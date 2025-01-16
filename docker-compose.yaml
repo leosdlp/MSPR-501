@@ -1,10 +1,21 @@
-version: "3.9"
 services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: mspr501_api_flask
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    networks:
+      - etl_network
+
   etl:
     build:
       context: ./etl
       dockerfile: Dockerfile
-    container_name: mspr501_etl-service
+    container_name: mspr501_etl_service
+    restart: always
     depends_on:
       - postgres
     volumes:
@@ -15,41 +26,87 @@ services:
     networks:
       - etl_network
 
+  metabase:
+    image: metabase/metabase:latest
+    container_name: mspr501_metabase
+    restart: unless-stopped
+    ports:
+      - '3003:3000'
+    environment:
+      - MB_DB_TYPE=postgres
+      - MB_DB_DBNAME=bdmetabase
+      - MB_DB_PORT=5434
+      - MB_DB_USER=bdmetabase
+      - MB_DB_PASS=s5t4v5
+      - MB_DB_HOST=pg_db_metabase
+      - JAVA_TIMEZONE=Europe/Paris
+    depends_on:
+      - pg_db_metabase
+
+  pgadmin4:
+    build:
+      context: ./pg_admin
+      dockerfile: Dockerfile
+    container_name: mspr501_pg_admin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: s5t4v5
+    ports:
+      - "8080:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - etl_network
+
+  pg_db_metabase:
+    build:
+      context: ./pg_db_metabase
+      dockerfile: Dockerfile
+    container_name: mspr501_pg_db_metabase
+    restart: always
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_DB: bdmetabase
+      POSTGRES_USER: bdmetabase
+      POSTGRES_PASSWORD: s5t4v5
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bdmetabase"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pgmetabase:/var/lib/postgresql/data
+    networks:
+      - etl_network
+
   postgres:
     build:
       context: ./postgres
       dockerfile: Dockerfile
-    container_name: mspr501_postgres-db
+    container_name: mspr501_postgres
+    restart: always
     ports:
       - "5432:5432"
+    environment:
+      POSTGRES_DB: mspr501
+      POSTGRES_USER: mspr501
+      POSTGRES_PASSWORD: s5t4v5
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mspr501"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./postgres/database:/docker-entrypoint-initdb.d
-    networks:
-      - etl_network
-
-  api:
-    build:
-      context: ./api
-      dockerfile: Dockerfile
-    container_name: mspr501_api-flask
-    ports:
-      - "5000:5000"
-    networks:
-      - etl_network
-
-  phppgadmin:
-    build:
-      context: ./phppgadmin
-      dockerfile: Dockerfile
-    container_name: mspr501_phpPgAdmin
-    ports:
-      - "8080:80"
+      - pgdata:/var/lib/postgresql/data
     networks:
       - etl_network
 
 volumes:
-  postgres_data:
+  pgdata:
+  pgmetabase:
 
 networks:
   etl_network:

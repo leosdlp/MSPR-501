@@ -118,36 +118,60 @@ def ensure_diseases_exist(conn, disease_ids):
     except Exception as e:
         print(f"Erreur lors de l'ajout des maladies : {e}")
 
+def truncate_table():
+    try:
+        conn = psycopg2.connect(**DB_CONFIG)
+        cursor = conn.cursor()
+        print("Connexion à la base PostgreSQL réussie.")
+
+        # Requête TRUNCATE
+        truncate_sql = "TRUNCATE TABLE statement RESTART IDENTITY CASCADE;"
+        cursor.execute(truncate_sql)
+        conn.commit()
+        print("Table statement vidée avec succès.")
+
+    except Exception as e:
+        print(f"Erreur lors du vidage de la table : {e}")
+    finally:
+        cursor.close()
+        conn.close()
+
 # Chargement des données dans PostgreSQL
 def load_data_to_postgres(df):
     try:
         conn = psycopg2.connect(**DB_CONFIG)
+        cursor = conn.cursor()
         print("Connexion à la base PostgreSQL réussie.")
 
-        # Vérifier et ajouter les maladies manquantes
-        disease_ids = {"covid_summary": 1, "h1n1": 2, "sars": 3, "monkeypox": 4}
-        ensure_diseases_exist(conn, disease_ids)
-
-        cursor = conn.cursor()
-
-        # Insérer les données dans la table statement
+        # Requête avec ON CONFLICT pour éviter les doublons
         sql = """
         INSERT INTO statement (_date, confirmed, deaths, recovered, active, total_tests, id_disease)
         VALUES (%s, %s, %s, %s, %s, %s, %s)
+        ON CONFLICT (id_statement) DO UPDATE
+        SET
+            confirmed = EXCLUDED.confirmed,
+            deaths = EXCLUDED.deaths,
+            recovered = EXCLUDED.recovered,
+            active = EXCLUDED.active,
+            total_tests = EXCLUDED.total_tests,
+            id_disease = EXCLUDED.id_disease
         """
+        # Préparez les données pour l'insertion
         values = df[["_date", "confirmed", "deaths", "recovered", "active", "total_tests", "id_disease"]].values.tolist()
         execute_batch(cursor, sql, values)
         conn.commit()
-        print("Données insérées avec succès dans la table statement.")
+        print("Données insérées ou mises à jour avec succès dans la table statement.")
+
     except Exception as e:
         print(f"Erreur lors de l'insertion des données : {e}")
     finally:
         cursor.close()
         conn.close()
 
-# Script principal
+# Script principal*2
 if __name__ == "__main__":
     file_paths = {name: download_file(name, url) for name, url in file_urls.items()}
     all_data = transform_data(file_paths)
     print(f"Données transformées :\n{all_data.head()}")
+    truncate_table()
     load_data_to_postgres(all_data)

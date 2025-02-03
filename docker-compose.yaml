@@ -7,8 +7,6 @@ services:
     restart: unless-stopped
     ports:
       - "5000:5000"
-    networks:
-      - etl_network
 
   etl:
     build:
@@ -23,11 +21,9 @@ services:
     environment:
       - SPARK_HOME=/opt/spark-3.4.4-bin-hadoop3
       - PATH=$SPARK_HOME/bin:$PATH
-    networks:
-      - etl_network
 
   metabase:
-    image: metabase/metabase:latest
+    image: metabase/metabase:v0.52.x
     container_name: mspr501_metabase
     restart: unless-stopped
     ports:
@@ -35,7 +31,7 @@ services:
     environment:
       - MB_DB_TYPE=postgres
       - MB_DB_DBNAME=bdmetabase
-      - MB_DB_PORT=5434
+      - MB_DB_PORT=5432
       - MB_DB_USER=bdmetabase
       - MB_DB_PASS=s5t4v5
       - MB_DB_HOST=pg_db_metabase
@@ -57,8 +53,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    networks:
-      - etl_network
 
   pg_db_metabase:
     build:
@@ -67,7 +61,7 @@ services:
     container_name: mspr501_pg_db_metabase
     restart: always
     ports:
-      - "5434:5432"
+      - "5432:5432"
     environment:
       POSTGRES_DB: bdmetabase
       POSTGRES_USER: bdmetabase
@@ -78,9 +72,7 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - pgmetabase:/var/lib/postgresql/data
-    networks:
-      - etl_network
+      - pgmetabase-data:/var/lib/postgresql/data
 
   postgres:
     build:
@@ -89,7 +81,7 @@ services:
     container_name: mspr501_postgres
     restart: always
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       POSTGRES_DB: mspr501
       POSTGRES_USER: mspr501
@@ -100,13 +92,8 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - pgdata:/var/lib/postgresql/data
-    networks:
-      - etl_network
+      - pg-data:/var/lib/postgresql/data
 
 volumes:
-  pgdata:
-  pgmetabase:
-
-networks:
-  etl_network:
+  pg-data:
+  pgmetabase-data:

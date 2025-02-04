@@ -1,9 +1,9 @@
 import os
 import requests
-import pandas as pd
+import pandas as pd  # type: ignore
 import time
-import psycopg2
-from psycopg2.extras import execute_batch
+import psycopg2  # type: ignore
+from psycopg2.extras import execute_batch  # type: ignore
 from datetime import datetime
 
 # Configurations PostgreSQL

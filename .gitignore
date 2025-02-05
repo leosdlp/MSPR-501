@@ -1,2 +1,6 @@
 /etl/data_files/
 .vscode/
+dev/app/src/data_files
+dev/app/src/clean/__pycache__
+dev/app/src/data/__pycache__
+dev/app/src/db/__pycache__

@@ -8,19 +8,34 @@ services:
     ports:
       - "5000:5000"
 
-  etl:
+  # etl:
+  #   build:
+  #     context: ./etl
+  #     dockerfile: Dockerfile
+  #   container_name: mspr501_etl_service
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - postgres
+  #   volumes:
+  #     - ./etl:/app
+  #   environment:
+  #     - SPARK_HOME=/opt/spark-3.4.4-bin-hadoop3
+  #     - PATH=$SPARK_HOME/bin:$PATH
+
+  etl_dev:
     build:
-      context: ./etl
+      context: ./dev/app
       dockerfile: Dockerfile
-    container_name: mspr501_etl_service
+    container_name: mspr501_etl_dev
     restart: unless-stopped
     depends_on:
       - postgres
     volumes:
-      - ./etl:/app
+      - ./dev/app/src:/app
     environment:
       - SPARK_HOME=/opt/spark-3.4.4-bin-hadoop3
       - PATH=$SPARK_HOME/bin:$PATH
+      - PYTHONPATH=/app
 
   metabase:
     image: metabase/metabase:v0.52.x

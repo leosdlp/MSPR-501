@@ -13,7 +13,7 @@ services:
       context: ./etl
       dockerfile: Dockerfile
     container_name: mspr501_etl_service
-    restart: always
+    restart: unless-stopped
     depends_on:
       - postgres
     volumes:
@@ -59,7 +59,7 @@ services:
       context: ./pg_db_metabase
       dockerfile: Dockerfile
     container_name: mspr501_pg_db_metabase
-    restart: always
+    restart: unless-stopped
     ports:
       - "5432:5432"
     environment:
@@ -79,7 +79,7 @@ services:
       context: ./postgres
       dockerfile: Dockerfile
     container_name: mspr501_postgres
-    restart: always
+    restart: unless-stopped
     ports:
       - "5433:5432"
     environment:

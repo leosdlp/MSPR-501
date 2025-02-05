@@ -55,7 +55,7 @@ CREATE TABLE country(
    name VARCHAR(50) NOT NULL,
    population BIGINT NOT NULL, -- Adapté pour de grandes populations
    pib NUMERIC(18,2), -- Plus précis que MONEY
-   id_climat_type INTEGER NOT NULL,
+   id_climat_type INTEGER,
    id_continent INTEGER NOT NULL,
    PRIMARY KEY(id_country),
    FOREIGN KEY(id_climat_type) REFERENCES climat_type(id_climat_type),

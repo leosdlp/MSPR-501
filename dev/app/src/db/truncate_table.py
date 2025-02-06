@@ -1,4 +1,4 @@
-from db.get_connection import get_connection
+from dev.app.src.db.connection import get_connection
 
 
 def truncate_table(table):

@@ -1,0 +1,142 @@
+[
+    {
+        "name": "Tropical Rainforest",
+        "description": "Hot and humid all year round with heavy rainfall"
+    },
+    {
+        "name": "Tropical Monsoon",
+        "description": "Distinct rainy season with a short dry season"
+    },
+    {
+        "name": "Tropical Savanna",
+        "description": "Alternates between a wet season and a dry season"
+    },
+    {
+        "name": "Arid Desert",
+        "description": "Very dry with little to no rainfall"
+    },
+    {
+        "name": "Semi-Arid Steppe",
+        "description": "Prolonged dry seasons with little rainfall"
+    },
+    {
+        "name": "Mediterranean",
+        "description": "Mild, wet winters and hot, dry summers"
+    },
+    {
+        "name": "Humid Subtropical",
+        "description": "Mild winters, hot and humid summers"
+    },
+    {
+        "name": "Oceanic",
+        "description": "Moderate temperatures with year-round rainfall"
+    },
+    {
+        "name": "Humid Continental",
+        "description": "Well-defined seasons with cold winters and hot summers"
+    },
+    {
+        "name": "Subarctic",
+        "description": "Very long, cold winters and short, cool summers"
+    },
+    {
+        "name": "Tundra",
+        "description": "Cold temperatures year-round with little vegetation"
+    },
+    {
+        "name": "Ice Cap",
+        "description": "Extremely cold, permanently covered in ice"
+    },
+    {
+        "name": "Alpine",
+        "description": "Cold climate influenced by altitude"
+    },
+    {
+        "name": "Equatorial",
+        "description": "Hot and humid with little seasonal variation"
+    },
+    {
+        "name": "Monsoon",
+        "description": "Heavy rainfall during the wet season"
+    },
+    {
+        "name": "Hot Desert",
+        "description": "Extreme heat and no rainfall"
+    },
+    {
+        "name": "Cold Desert",
+        "description": "Dry climate with very low winter temperatures"
+    },
+    {
+        "name": "Steppe",
+        "description": "Semi-arid dry seasons with moderate rainfall"
+    },
+    {
+        "name": "Savanna",
+        "description": "Alternates between dry and wet seasons"
+    },
+    {
+        "name": "Subpolar Oceanic",
+        "description": "Cool temperatures year-round with moderate rainfall"
+    },
+    {
+        "name": "Polar Tundra",
+        "description": "Permanently frozen soil, little precipitation"
+    },
+    {
+        "name": "Polar Ice Sheet",
+        "description": "Extreme cold with glaciers and no vegetation"
+    },
+    {
+        "name": "Continental Subarctic",
+        "description": "Very cold and long winters, short mild summers"
+    },
+    {
+        "name": "Temperate Continental",
+        "description": "Temperate climate with well-defined seasons"
+    },
+    {
+        "name": "Humid Subarctic",
+        "description": "Cold and snowy winters, short summers"
+    },
+    {
+        "name": "Cold Oceanic",
+        "description": "Cool temperatures with constant humidity"
+    },
+    {
+        "name": "Wet Tropical",
+        "description": "Heavy rainfall and high humidity year-round"
+    },
+    {
+        "name": "Dry Tropical",
+        "description": "Hot year-round with dry periods"
+    },
+    {
+        "name": "Marine West Coast",
+        "description": "Mild temperatures and constant humidity"
+    },
+    {
+        "name": "Boreal",
+        "description": "Long, very cold winters, short and cool summers"
+    },
+    {
+        "name": "Continental Monsoon",
+        "description": "Cold, dry winters and hot, humid summers"
+    },
+    {
+        "name": "Subtropical Highland",
+        "description": "Moderate temperatures influenced by altitude"
+    },
+    {
+        "name": "Desertic Polar",
+        "description": "Extremely dry and cold year-round"
+    },
+    {
+        "name": "Subtropical Arid",
+        "description": "Extreme heat with very little rainfall"
+    },
+    {
+        "name": "Highland Steppe",
+        "description": "Semi-arid climate influenced by altitude"
+    }
+]

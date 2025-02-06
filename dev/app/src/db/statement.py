@@ -1,6 +1,6 @@
 from psycopg2.extras import execute_batch  # type: ignore
 
-from dev.app.src.db.connection import get_connection
+from db.connection import get_connection
 
 def set_statement_data(df):
     if df.empty:

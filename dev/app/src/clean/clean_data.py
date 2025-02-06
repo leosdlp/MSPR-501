@@ -1,4 +1,4 @@
-from dev.app.src.db.statement import set_statement_data
+from db.statement import set_statement_data
 from clean.clean_covid import clean_covid
 from clean.clean_h1n1 import clean_h1n1
 from clean.clean_mpox import clean_mpox

@@ -1,5 +1,5 @@
-from dev.app.src.db.countries import set_data_countries
-from dev.app.src.db.continents import set_data_continents
+from db.countries import set_data_countries
+from db.continents import set_data_continents
 
 
 def set_data_immutable():

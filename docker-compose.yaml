@@ -75,8 +75,6 @@ services:
       dockerfile: Dockerfile
     container_name: mspr501_pg_db_metabase
     restart: unless-stopped
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_DB: bdmetabase
       POSTGRES_USER: bdmetabase
@@ -95,8 +93,6 @@ services:
       dockerfile: Dockerfile
     container_name: mspr501_postgres
     restart: unless-stopped
-    ports:
-      - "5433:5432"
     environment:
       POSTGRES_DB: mspr501
       POSTGRES_USER: mspr501

@@ -46,7 +46,7 @@ CREATE TABLE continent(
 CREATE TABLE climat_type(
    id_climat_type SERIAL,
    name VARCHAR(50) NOT NULL,
-   description VARCHAR(50),
+   description VARCHAR(255),
    PRIMARY KEY(id_climat_type)
 );
 

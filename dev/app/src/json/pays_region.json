@@ -1,0 +1,1032 @@
+{
+    "Algeria": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 6
+    },
+    "Angola": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 3
+    },
+    "Benin": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 3
+    },
+    "Botswana": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 5
+    },
+    "Burkina Faso": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 3
+    },
+    "Burundi": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 3
+    },
+    "Cameroon": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 1
+    },
+    "Cape Verde": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 4
+    },
+    "Central African Republic": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 3
+    },
+    "Chad": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 4
+    },
+    "Comoros": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 1
+    },
+    "Ivory Coast": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 3
+    },
+    "DR Congo": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 1
+    },
+    "Equatorial Guinea": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 1
+    },
+    "Eritrea": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 4
+    },
+    "Ethiopia": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 5
+    },
+    "Gabon": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 1
+    },
+    "Gambia": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 3
+    },
+    "Ghana": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 3
+    },
+    "Guinea": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 3
+    },
+    "Guinea-Bissau": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 3
+    },
+    "Kenya": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 5
+    },
+    "Lesotho": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 9
+    },
+    "Liberia": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 3
+    },
+    "Madagascar": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 1
+    },
+    "Malawi": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 5
+    },
+    "Mali": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 4
+    },
+    "Mauritania": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 4
+    },
+    "Mauritius": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 1
+    },
+    "Mozambique": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 3
+    },
+    "Namibia": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 4
+    },
+    "Niger": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 4
+    },
+    "Nigeria": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 3
+    },
+    "Republic of the Congo": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 1
+    },
+    "Rwanda": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 3
+    },
+    "São Tomé and Príncipe": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 1
+    },
+    "Senegal": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 4
+    },
+    "Seychelles": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 1
+    },
+    "Sierra Leone": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 3
+    },
+    "South Africa": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 6
+    },
+    "South Sudan": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 3
+    },
+    "Eswatini": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 7
+    },
+    "Togo": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 3
+    },
+    "Uganda": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 3
+    },
+    "Tanzania": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 3
+    },
+    "Zambia": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 5
+    },
+    "Zimbabwe": {
+        "region": "African Region",
+        "code_region": "AFR",
+        "code_climat": 5
+    },
+    "Antigua and Barbuda": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 3
+    },
+    "Argentina": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 9
+    },
+    "United States": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 9
+    },
+    "Puerto Rico": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 9
+    },
+    "Aruba": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 9
+    },
+    "Macau": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 9
+    },
+    "Bahamas": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 7
+    },
+    "Barbados": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 7
+    },
+    "Belize": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 3
+    },
+    "Bolivia": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 9
+    },
+    "Brazil": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 1
+    },
+    "Canada": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 10
+    },
+    "Chile": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 9
+    },
+    "Colombia": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 1
+    },
+    "Costa Rica": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 1
+    },
+    "Cuba": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 7
+    },
+    "Dominica": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 1
+    },
+    "Dominican Republic": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 7
+    },
+    "Ecuador": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 1
+    },
+    "El Salvador": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 7
+    },
+    "Grenada": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 7
+    },
+    "Guatemala": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 3
+    },
+    "Guyana": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 1
+    },
+    "Haiti": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 7
+    },
+    "Honduras": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 3
+    },
+    "Jamaica": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 7
+    },
+    "Mexico": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 7
+    },
+    "Nicaragua": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 3
+    },
+    "Panama": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 1
+    },
+    "Paraguay": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 9
+    },
+    "Peru": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 9
+    },
+    "Saint Kitts and Nevis": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 7
+    },
+    "Saint Lucia": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 7
+    },
+    "Saint Vincent and the Grenadines": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 7
+    },
+    "Suriname": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 1
+    },
+    "Trinidad and Tobago": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 7
+    },
+    "Uruguay": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 9
+    },
+    "Venezuela": {
+        "region": "Region of the Americas",
+        "code_region": "AMR",
+        "code_climat": 1
+    },
+    "Bangladesh": {
+        "region": "South-East Asian Region",
+        "code_region": "SEAR",
+        "code_climat": 2
+    },
+    "Bhutan": {
+        "region": "South-East Asian Region",
+        "code_region": "SEAR",
+        "code_climat": 13
+    },
+    "Democratic People's Republic of Korea": {
+        "region": "South-East Asian Region",
+        "code_region": "SEAR",
+        "code_climat": 9
+    },
+    "India": {
+        "region": "South-East Asian Region",
+        "code_region": "SEAR",
+        "code_climat": 2
+    },
+    "Indonesia": {
+        "region": "South-East Asian Region",
+        "code_region": "SEAR",
+        "code_climat": 1
+    },
+    "Maldives": {
+        "region": "South-East Asian Region",
+        "code_region": "SEAR",
+        "code_climat": 1
+    },
+    "Myanmar": {
+        "region": "South-East Asian Region",
+        "code_region": "SEAR",
+        "code_climat": 2
+    },
+    "Nepal": {
+        "region": "South-East Asian Region",
+        "code_region": "SEAR",
+        "code_climat": 13
+    },
+    "Sri Lanka": {
+        "region": "South-East Asian Region",
+        "code_region": "SEAR",
+        "code_climat": 2
+    },
+    "Thailand": {
+        "region": "South-East Asian Region",
+        "code_region": "SEAR",
+        "code_climat": 2
+    },
+    "Timor-Leste": {
+        "region": "South-East Asian Region",
+        "code_region": "SEAR",
+        "code_climat": 1
+    },
+    "Albania": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 6
+    },
+    "Andorra": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 8
+    },
+    "Armenia": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 9
+    },
+    "Austria": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 9
+    },
+    "Azerbaijan": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 9
+    },
+    "Belarus": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 9
+    },
+    "Belgium": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 8
+    },
+    "Bosnia and Herzegovina": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 9
+    },
+    "Bulgaria": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 9
+    },
+    "Kosovo": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 9
+    },
+    "Croatia": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 6
+    },
+    "Cyprus": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 6
+    },
+    "Czechia": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 9
+    },
+    "Denmark": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 8
+    },
+    "Estonia": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 10
+    },
+    "Finland": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 10
+    },
+    "France": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 8
+    },
+    "Georgia": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 9
+    },
+    "Germany": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 9
+    },
+    "Greece": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 6
+    },
+    "Hungary": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 9
+    },
+    "Iceland": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 11
+    },
+    "Ireland": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 8
+    },
+    "Israel": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 6
+    },
+    "Palestine": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 6
+    },
+    "Italy": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 6
+    },
+    "Kazakhstan": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 10
+    },
+    "Kyrgyzstan": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 13
+    },
+    "Latvia": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 10
+    },
+    "Lithuania": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 10
+    },
+    "Luxembourg": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 8
+    },
+    "Malta": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 6
+    },
+    "Moldova": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 9
+    },
+    "Monaco": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 6
+    },
+    "Montenegro": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 6
+    },
+    "Netherlands": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 8
+    },
+    "North Macedonia": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 6
+    },
+    "Norway": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 10
+    },
+    "Poland": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 9
+    },
+    "Portugal": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 6
+    },
+    "Romania": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 9
+    },
+    "Russia": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 10
+    },
+    "San Marino": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 6
+    },
+    "Serbia": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 9
+    },
+    "Slovakia": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 9
+    },
+    "Slovenia": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 6
+    },
+    "Spain": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 6
+    },
+    "Sweden": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 10
+    },
+    "Switzerland": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 9
+    },
+    "Liechtenstein": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 9
+    },
+    "Tajikistan": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 13
+    },
+    "Turkey": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 9
+    },
+    "Turkmenistan": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 9
+    },
+    "Ukraine": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 10
+    },
+    "United Kingdom": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 8
+    },
+    "Uzbekistan": {
+        "region": "European Region",
+        "code_region": "EUR",
+        "code_climat": 9
+    },
+    "Afghanistan": {
+        "region": "Eastern Mediterranean Region",
+        "code_region": "EMR",
+        "code_climat": 13
+    },
+    "Bahrain": {
+        "region": "Eastern Mediterranean Region",
+        "code_region": "EMR",
+        "code_climat": 4
+    },
+    "Djibouti": {
+        "region": "Eastern Mediterranean Region",
+        "code_region": "EMR",
+        "code_climat": 4
+    },
+    "Egypt": {
+        "region": "Eastern Mediterranean Region",
+        "code_region": "EMR",
+        "code_climat": 4
+    },
+    "Iran": {
+        "region": "Eastern Mediterranean Region",
+        "code_region": "EMR",
+        "code_climat": 9
+    },
+    "Iraq": {
+        "region": "Eastern Mediterranean Region",
+        "code_region": "EMR",
+        "code_climat": 4
+    },
+    "Jordan": {
+        "region": "Eastern Mediterranean Region",
+        "code_region": "EMR",
+        "code_climat": 4
+    },
+    "Kuwait": {
+        "region": "Eastern Mediterranean Region",
+        "code_region": "EMR",
+        "code_climat": 4
+    },
+    "Lebanon": {
+        "region": "Eastern Mediterranean Region",
+        "code_region": "EMR",
+        "code_climat": 6
+    },
+    "Libya": {
+        "region": "Eastern Mediterranean Region",
+        "code_region": "EMR",
+        "code_climat": 4
+    },
+    "Morocco": {
+        "region": "Eastern Mediterranean Region",
+        "code_region": "EMR",
+        "code_climat": 6
+    },
+    "Oman": {
+        "region": "Eastern Mediterranean Region",
+        "code_region": "EMR",
+        "code_climat": 4
+    },
+    "Pakistan": {
+        "region": "Eastern Mediterranean Region",
+        "code_region": "EMR",
+        "code_climat": 4
+    },
+    "Qatar": {
+        "region": "Eastern Mediterranean Region",
+        "code_region": "EMR",
+        "code_climat": 4
+    },
+    "Saudi Arabia": {
+        "region": "Eastern Mediterranean Region",
+        "code_region": "EMR",
+        "code_climat": 4
+    },
+    "Somalia": {
+        "region": "Eastern Mediterranean Region",
+        "code_region": "EMR",
+        "code_climat": 4
+    },
+    "Sudan": {
+        "region": "Eastern Mediterranean Region",
+        "code_region": "EMR",
+        "code_climat": 4
+    },
+    "Syria": {
+        "region": "Eastern Mediterranean Region",
+        "code_region": "EMR",
+        "code_climat": 4
+    },
+    "Tunisia": {
+        "region": "Eastern Mediterranean Region",
+        "code_region": "EMR",
+        "code_climat": 6
+    },
+    "United Arab Emirates": {
+        "region": "Eastern Mediterranean Region",
+        "code_region": "EMR",
+        "code_climat": 4
+    },
+    "Yemen": {
+        "region": "Eastern Mediterranean Region",
+        "code_region": "EMR",
+        "code_climat": 4
+    },
+    "Australia": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 1
+    },
+    "Brunei": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 1
+    },
+    "Cambodia": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 2
+    },
+    "China": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 9
+    },
+    "Hong Kong": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 9
+    },
+    "Cook Islands": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 1
+    },
+    "Fiji": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 1
+    },
+    "Japan": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 9
+    },
+    "Kiribati": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 1
+    },
+    "Laos": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 1
+    },
+    "Malaysia": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 1
+    },
+    "Marshall Islands": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 1
+    },
+    "Micronesia": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 1
+    },
+    "Mongolia": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 10
+    },
+    "Nauru": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 1
+    },
+    "New Zealand": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 8
+    },
+    "Niue": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 1
+    },
+    "Palau": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 1
+    },
+    "Papua New Guinea": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 1
+    },
+    "Philippines": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 2
+    },
+    "Samoa": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 1
+    },
+    "Singapore": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 1
+    },
+    "Solomon Islands": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 1
+    },
+    "South Korea": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 9
+    },
+    "North Korea": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 9
+    },
+    "Taiwan": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 2
+    },
+    "Tonga": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 1
+    },
+    "Tuvalu": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 1
+    },
+    "Vanuatu": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 1
+    },
+    "Vietnam": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 2
+    },
+    "South Georgia": {
+        "region": "Unknown",
+        "code_region": "UNK",
+        "code_climat": -1
+    },
+    "Wallis and Futuna": {
+        "region": "Western Pacific Region",
+        "code_region": "WPR",
+        "code_climat": 1
+    },
+    "Pitcairn Islands": {
+        "region": "Unknown",
+        "code_region": "UNK",
+        "code_climat": -1
+    }
+}

@@ -54,17 +54,11 @@ def fetch_climat_type():
 def set_data_countries():
     truncate_table("country")
 
-    try:
-        response = requests.get("https://restcountries.com/v3.1/all")
-        response.raise_for_status()
-        countries_data = response.json()
-    except requests.exceptions.RequestException as e:
-        print(f"[ERROR] Problème lors de la récupération des pays via l'API : {e}")
-        return
+    countries_data = get_countries_data()
+
+    country_region = get_country_region()
 
     gdp_map = fetch_gdp_data(API_KEY, GDP_API_URL)
-    region_pays = load_region_pays()
-    climat_map = fetch_climat_type()
 
     conn = get_connection()
     cursor = conn.cursor()
@@ -72,7 +66,7 @@ def set_data_countries():
     try:
         cursor.execute("SELECT id_continent, name FROM continent;")
         continent_map = {row[1]: row[0] for row in cursor.fetchall()}
-
+        
         values = []
         for country in countries_data:
             name = country.get("name", {}).get("common", "").strip()

@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "MSPR-BRUNO",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

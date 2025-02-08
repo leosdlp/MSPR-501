@@ -1,14 +1,15 @@
+from psycopg2.extras import execute_batch  # type: ignore
 import requests
 import json
-from psycopg2.extras import execute_batch  # type: ignore
 
 from db.connection import get_connection
 from db.truncate_table import truncate_table
 from db.pib import fetch_gdp_data
+from db.country_climat_type import insert_country_climat_types
+
 
 API_KEY = "UKRG6rVwuY8wXXfyE1ZWhg==Pu6zZccZayVbGrZi"
 GDP_API_URL = "https://api.api-ninjas.com/v1/gdp?year=2020"
-PAYS_REGION_JSON = "./json/pays_region.json"
 
 CONTINENT_FIX = {
     "Americas": "South America",
@@ -16,13 +17,26 @@ CONTINENT_FIX = {
 }
 
 def load_region_pays():
+PAYS_REGION_JSON = "./json/pays_region.json"
+
+def get_countries_data() :
+    try:
+        response = requests.get("https://restcountries.com/v3.1/all")
+        response.raise_for_status()
+        countries_data = response.json()
+        return countries_data
+    except requests.exceptions.RequestException as e:
+        print(f"[ERROR] Problème lors de la récupération des pays via l'API : {e}")
+        return
+
+def get_country_region() :
     try:
         with open(PAYS_REGION_JSON, "r", encoding="utf-8") as file:
-            data = json.load(file)
-        return {key.lower(): value for key, value in data.items()}
-    except Exception as e:
-        print(f"[ERROR] Impossible de charger {PAYS_REGION_JSON}: {e}")
-        return {}
+            pays_data = json.load(file)
+            return pays_data
+    except requests.exceptions.RequestException as e:
+        print(f"[ERROR] Problème lors de la récupération des pays via l'API : {e}")
+        return
 
 def fetch_climat_type():
     conn = get_connection()
@@ -63,7 +77,7 @@ def set_data_countries():
         for country in countries_data:
             name = country.get("name", {}).get("common", "").strip()
             population = country.get("population")
-            region = country.get("region", "").strip()
+            continent = country.get("region", "").strip() # Région (dans l'API) = Continent
             iso_code = country.get("cca3", "").strip()
 
             if not name or not population or not region or not iso_code:

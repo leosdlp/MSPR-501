@@ -1,8 +1,9 @@
-import json
 from psycopg2.extras import execute_batch # type: ignore
+import json
 
 from db.connection import get_connection
 from db.truncate_table import truncate_table
+
 
 CLIMAT_TYPE_JSON = "./json/climat_type.json"
 
@@ -24,8 +25,7 @@ def set_climat_type():
 
         sql = """
             INSERT INTO climat_type (id_climat_type, name, description)
-            VALUES (%s, %s, %s)
-            ON CONFLICT (id_climat_type) DO NOTHING;
+            VALUES (%s, %s, %s);
         """
 
         values = [(i + 1, climat["name"], climat["description"]) for i, climat in enumerate(climat_types)]

@@ -19,5 +19,8 @@ def set_disease(disease):
 
     execute_batch(cursor, sql, values)
     conn.commit()
+
+    print("[INFO] Données insérées dans la table disease.")
+
     cursor.close()
     conn.close()

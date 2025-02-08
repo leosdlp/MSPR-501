@@ -18,26 +18,26 @@ def get_brut_data():
 
     if not os.path.exists(data_folder):
         os.makedirs(data_folder)
-        print(f"Dossier créé : {data_folder}")
+        print(f"[INFO] Dossier créé : {data_folder}")
 
     for url in urls:
         response = requests.get(url, allow_redirects=True)
         if response.status_code == 200:
-            print(f"Archive téléchargée avec succès depuis : {url}")
+            print(f"[INFO] Archive téléchargée avec succès depuis : {url}")
             
             zip_name = url.split("/")[-1].split("?")[0]
             zip_folder = os.path.join(data_folder, zip_name)
             if not os.path.exists(zip_folder):
                 os.makedirs(zip_folder)
-                print(f"Dossier créé pour l'archive : {zip_folder}")
+                print(f"[INFO] Dossier créé pour l'archive : {zip_folder}")
             
             with zipfile.ZipFile(io.BytesIO(response.content)) as z:
-                print("Fichiers contenus dans l'archive :")
-                print(z.namelist())
+                print("[INFO] Fichiers contenus dans l'archive :")
+                print(f"[INFO] {z.namelist()}")
                 
                 for file_name in z.namelist():
                     if file_name.endswith(".csv"):
-                        print(f"\nExtraction et lecture du fichier : {file_name}")
+                        print(f"[INFO] Extraction et lecture du fichier : {file_name}")
                         file_path = os.path.join(zip_folder, file_name)
                         
                         with z.open(file_name) as f:
@@ -47,4 +47,4 @@ def get_brut_data():
                         df = spark.read.csv(file_path, header=True, inferSchema=True)
                         df.show(5)
         else:
-            print(f"Échec du téléchargement depuis {url}. Code d'état : {response.status_code}")
+            print(f"[ERROR] Échec du téléchargement depuis {url}. Code d'état : {response.status_code}")

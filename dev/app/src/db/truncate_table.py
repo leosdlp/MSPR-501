@@ -9,5 +9,8 @@ def truncate_table(table):
 
     cursor.execute(sql)
     conn.commit()
+
+    print(f"[INFO] Table {table} vidée.")
+
     cursor.close()
     conn.close()

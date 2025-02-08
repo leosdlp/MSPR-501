@@ -28,16 +28,6 @@ services:
     restart: unless-stopped
     ports:
       - '3003:3000'
-    environment:
-      - MB_DB_TYPE=postgres
-      - MB_DB_DBNAME=bdmetabase
-      - MB_DB_PORT=5432
-      - MB_DB_USER=bdmetabase
-      - MB_DB_PASS=s5t4v5
-      - MB_DB_HOST=pg_db_metabase
-      - JAVA_TIMEZONE=Europe/Paris
-    depends_on:
-      - pg_db_metabase
 
   pgadmin4:
     build:
@@ -54,25 +44,6 @@ services:
       postgres:
         condition: service_healthy
 
-  pg_db_metabase:
-    build:
-      context: ./pg_db_metabase
-      dockerfile: Dockerfile
-    container_name: mspr501_pg_db_metabase
-    restart: unless-stopped
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_DB: bdmetabase
-      POSTGRES_USER: bdmetabase
-      POSTGRES_PASSWORD: s5t4v5
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U bdmetabase"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    volumes:
-      - pgmetabase-data:/var/lib/postgresql/data
 
   postgres:
     build:
@@ -96,4 +67,3 @@ services:
 
 volumes:
   pg-data:
-  pgmetabase-data:

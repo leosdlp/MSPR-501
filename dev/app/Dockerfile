@@ -13,7 +13,8 @@ RUN pip3 install pyspark  \
     pandas \
     dash \
     psycopg2-binary \
-    python-dotenv && \
+    python-dotenv \
+    kagglehub && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN curl -O https://downloads.apache.org/spark/spark-3.4.4/spark-3.4.4-bin-hadoop3.tgz && \

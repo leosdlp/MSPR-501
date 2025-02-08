@@ -16,7 +16,6 @@ CONTINENT_FIX = {
     "Antarctic": "Antarctica"
 }
 
-def load_region_pays():
 PAYS_REGION_JSON = "./json/pays_region.json"
 
 def get_countries_data() :
@@ -73,43 +72,49 @@ def set_data_countries():
             population = country.get("population")
             continent = country.get("region", "").strip() # Région (dans l'API) = Continent
             iso_code = country.get("cca3", "").strip()
+            pib = gdp_map.get(iso_code, None)
+            latlng = country.get("latlng", [])
+            if len(latlng) >= 2:
+                latitude = latlng[0]
+                longitude = latlng[1]
+            else:
+                latitude = None
+                longitude = None
 
-            if not name or not population or not region or not iso_code:
+            region = country_region.get(name, {}).get("region", "").strip()
+            cursor.execute("SELECT id_region FROM region WHERE name = %s;", (region,))
+
+            print(f"[INFO] Préparation de l'insertion du pays : {name} (Région: {region})")
+
+            result = cursor.fetchone()
+            id_region = result[0] if result else None
+
+            if not name or not population or not continent or not iso_code or not latitude or not longitude or not pib or not id_region:
                 continue
 
-            region = CONTINENT_FIX.get(region, region)
-            id_continent = continent_map.get(region)
+            continent = CONTINENT_FIX.get(continent, continent)
+            id_continent = continent_map.get(continent)
 
             if not id_continent:
-                print(f"[WARNING] Continent inconnu pour {name} (Région: {region})")
+                print(f"[WARNING] Continent inconnu pour {name} (Région: {continent})")
                 continue
 
-            pib = gdp_map.get(iso_code, None)
 
-            region_data = region_pays.get(name.lower())  
-            id_climat_type = region_data.get("code_climat") if region_data else None
-
-            if id_climat_type not in climat_map.values():
-                print(f"[WARNING] ID climat {id_climat_type} non trouvé en base pour {name}, assignation de NULL")
-                id_climat_type = None 
-
-            if not pib or not id_climat_type :
-                continue
-
-            values.append((name, population, id_continent, pib, id_climat_type))
+            values.append((name, population, id_continent, pib, latitude, longitude, id_region))
 
         if not values:
             print("[ERROR] Aucun pays valide à insérer.")
             return
 
         sql = """
-            INSERT INTO country (name, population, id_continent, pib, id_climat_type)
-            VALUES (%s, %s, %s, %s, %s)
-            ON CONFLICT (name) DO NOTHING;
+            INSERT INTO country (name, population, id_continent, pib, latitude, longitude, id_region)
+            VALUES (%s, %s, %s, %s, %s, %s, %s);
         """
         execute_batch(cursor, sql, values)
         conn.commit()
         print(f"[INFO] {len(values)} pays insérés dans la table 'country'.")
+
+        insert_country_climat_types()
 
     except Exception as e:
         print(f"[ERROR] Problème lors de l'insertion des pays en base : {e}")

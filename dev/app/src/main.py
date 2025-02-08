@@ -15,13 +15,6 @@ from db.data_immutable import set_data_immutable
 from clean.clean_data import clean_data
 
 
-DISEASE = {
-            "covid": { "id": 1, "isPandemic": True },
-            "h1n1": { "id": 2,"isPandemic": True },
-            "sars": { "id": 3,"isPandemic": False },
-            "monkeypox": { "id": 4,"isPandemic": False }
-            }
-
 time.sleep(10) # ATENTION : À SUPPRIMER (délais le temps que les containers nécessaires au traitement se montent)
 
 print("\n\n")
@@ -37,7 +30,7 @@ print("\n\n ========== Début de la récupération des datas brutes ========== "
 get_brut_data()
 
 print("\n\n ========== Insertion des données dans disease ========== ")
-set_disease(DISEASE)
+set_disease()
 
 print("\n\n ========== Insertion des données fixes dans les tables ========== ")
 set_data_immutable()

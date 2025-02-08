@@ -1,3 +1,12 @@
+"""
+Ce module récupère des données brutes, insère des données fixes dans les tables appropriées et 
+effectue un nettoyage des données avant de les insérer dans une table finale.
+
+Le processus commence par la récupération des données brutes, suivi de l'insertion des données 
+fixes liées aux maladies dans la table `disease`. Ensuite, des données fixes sont insérées dans 
+les tables appropriées, avant de nettoyer et insérer les données dans la table `statement`.
+"""
+
 import time
 
 from data.get_brut_data import get_brut_data

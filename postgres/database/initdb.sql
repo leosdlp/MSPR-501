@@ -23,6 +23,8 @@ CREATE TABLE country(
    name VARCHAR(50) NOT NULL,
    population BIGINT NOT NULL, -- Adapté pour de grandes populations
    pib NUMERIC(18,2), -- Plus précis que MONEY
+   latitude DOUBLE PRECISION,
+   longitude DOUBLE PRECISION,
    id_climat_type INTEGER NOT NULL,
    id_continent INTEGER NOT NULL,
    id_region INTEGER,

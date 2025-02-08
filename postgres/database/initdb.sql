@@ -1,20 +1,19 @@
 CREATE TABLE region(
    id_region SERIAL,
    name VARCHAR(50) NOT NULL,
-   population BIGINT, -- Adapté pour supporter de grandes populations
    PRIMARY KEY(id_region)
 );
 
 CREATE TABLE continent(
    id_continent SERIAL,
-   name VARCHAR(50) NOT NULL,
+   name VARCHAR(50) UNIQUE NOT NULL,
    PRIMARY KEY(id_continent)
 );
 
 CREATE TABLE climat_type(
    id_climat_type SERIAL,
-   name VARCHAR(50) NOT NULL,
-   description VARCHAR(50),
+   name VARCHAR(255) UNIQUE NOT NULL,
+   description VARCHAR(255),
    PRIMARY KEY(id_climat_type)
 );
 
@@ -25,24 +24,18 @@ CREATE TABLE country(
    pib NUMERIC(18,2), -- Plus précis que MONEY
    latitude DOUBLE PRECISION,
    longitude DOUBLE PRECISION,
-   id_climat_type INTEGER NOT NULL,
    id_continent INTEGER NOT NULL,
    id_region INTEGER,
    PRIMARY KEY(id_country),
-   FOREIGN KEY(id_climat_type) REFERENCES climat_type(id_climat_type),
    FOREIGN KEY(id_continent) REFERENCES continent(id_continent),
    FOREIGN KEY(id_region) REFERENCES region(id_region)
 );
 
-CREATE TABLE weather_report(
-   id_weather_report SERIAL,
-   date_start DATE NOT NULL,
-   date_end DATE NOT NULL,
-   average_temperature NUMERIC(15,2),
-   average_wind_velocity NUMERIC(15,2),
-   humidity_level NUMERIC(15,2),
+CREATE TABLE country_climat_type (
+   id_climat_type INTEGER NOT NULL,
    id_country INTEGER NOT NULL,
-   PRIMARY KEY(id_weather_report),
+   PRIMARY KEY(id_climat_type, id_country),
+   FOREIGN KEY(id_climat_type) REFERENCES climat_type(id_climat_type),
    FOREIGN KEY(id_country) REFERENCES country(id_country)
 );
 
@@ -70,12 +63,3 @@ CREATE TABLE statement(
    FOREIGN KEY(id_disease) REFERENCES disease(id_disease),
    FOREIGN KEY(id_country) REFERENCES country(id_country)
 );
-
-
-
-
-
-
-
-
-

@@ -2,6 +2,7 @@
 erDiagram
     disease {
         SERIAL id_disease PK
+        BOOLEAN is_pandemic
         VARCHAR(50) name
     }
 
@@ -25,7 +26,6 @@ erDiagram
     region {
         SERIAL id_region PK
         VARCHAR(50) name
-        INTEGER population
     }
 
     continent {
@@ -37,12 +37,14 @@ erDiagram
         SERIAL id_country PK
         VARCHAR(50) name
         INTEGER population
+        DOUBLE pib
+        DOUBLE latitude
+        DOUBLE longitude
+        INTEGER id_region FK
         INTEGER id_continent FK
     }
     country ||--|| continent : "references"
     country ||--|| region : "references"
-    country ||--|| climat_type : "references"
-    country ||--|| weather_report : "references"
 
     climat_type {
         SERIAL id_climat_type PK
@@ -50,13 +52,10 @@ erDiagram
         STRING description
     }
 
-    weather_report {
-        SERAIL id_weather_report PK
-        DATETIME date_start
-        DATETIME date_end
-        FLOAT average_temperature
-        FLOAT average_wind_velocity
-        FLOAT humidity_level
-        INTEGER id_country FK
+    country_climat_type {
+        INTEGER id_climat_type PK
+        INTEGER id_country PK
     }
+    country_climat_type ||--|| climat_type : "references"
+    country_climat_type ||--|| country : "references"
 ```

@@ -9,7 +9,6 @@ spark = SparkSession.builder.appName("ReadCSVFromZip").getOrCreate()
 urls = [
     "https://www.kaggle.com/api/v1/datasets/download/imdevskp/h1n1-swine-flu-2009-pandemic-dataset",
     "https://www.kaggle.com/api/v1/datasets/download/imdevskp/corona-virus-report",
-    "https://www.kaggle.com/api/v1/datasets/download/josephassaker/covid19-global-dataset",
     "https://www.kaggle.com/api/v1/datasets/download/utkarshx27/mpox-monkeypox-data",
     "https://www.kaggle.com/api/v1/datasets/download/imdevskp/sars-outbreak-2003-complete-dataset"
 ]

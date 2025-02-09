@@ -1,13 +1,13 @@
 import os
-from spark.spark import spark_session
-from pyspark.sql.functions import udf, lit, col         # type: ignore
-from pyspark.sql.types import IntegerType               # type: ignore
+from pyspark.sql.functions import udf, lit, col     # type: ignore
+from pyspark.sql import functions as F              # type: ignore
+from pyspark.sql.types import IntegerType           # type: ignore
 
 from db.connection import get_connection
+from spark.spark import spark_session
 
 
 def clean_covid():
-
     spark = spark_session()
 
     df = spark.read.csv("data_files/corona-virus-report/covid_19_clean_complete.csv", header=True, inferSchema=True)
@@ -30,17 +30,31 @@ def clean_covid():
 
     df = df.withColumn("id_disease", lit(id_disease).cast(IntegerType()))
 
-    df_final = df.select(
+    df_aggregated = df.groupBy(
+        col("Date"), 
+        col("id_country"), 
+        col("id_disease")
+    ).agg(
+        F.sum("Confirmed").cast(IntegerType()).alias("Confirmed"),
+        F.sum("Deaths").cast(IntegerType()).alias("Deaths"),
+        F.sum("Recovered").cast(IntegerType()).alias("Recovered"),
+        F.sum("Active").cast(IntegerType()).alias("Active")
+    )
+
+    df_final = df_aggregated.select(
         col("Date").alias("_date"),
-        col("Confirmed").cast(IntegerType()),
-        col("Deaths").cast(IntegerType()),
-        col("Recovered").cast(IntegerType()),
-        col("Active").cast(IntegerType()),
+        col("Confirmed"),
+        col("Deaths"),
+        col("Recovered"),
+        col("Active"),
         col("id_disease"),
         col("id_country")
     )
 
+    df_final = df_final.dropna()
+    df_final = df_final.dropDuplicates()
+
     cursor.close()
     conn.close()
-    
+
     return df_final

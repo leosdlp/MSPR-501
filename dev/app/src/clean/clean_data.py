@@ -1,11 +1,14 @@
+from spark.spark import spark_session
 from db.statement import set_statement_data
 from clean.clean_covid import clean_covid
 from clean.clean_h1n1 import clean_h1n1
 from clean.clean_mpox import clean_mpox
 from clean.clean_sras import clean_sras
-
+from spark.spark import spark_session
 
 def clean_data():
+    spark = spark_session()
+    
     print("\n ===== Nettoyage des données pour covid ===== ")
     df = clean_covid()
     try:
@@ -33,3 +36,5 @@ def clean_data():
         df = set_statement_data(df)
     except Exception as exception:
         print(f"[ERROR] Une erreur s'est produite pour : sras. {exception}")
+
+    spark.stop()

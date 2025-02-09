@@ -13,9 +13,10 @@ from data.get_brut_data import get_brut_data
 from db.disease import set_disease
 from db.data_immutable import set_data_immutable
 from clean.clean_data import clean_data
+from data.drop_dataset import drop_dataset
 
 
-time.sleep(10) # ATENTION : À SUPPRIMER (délais le temps que les containers nécessaires au traitement se montent)
+# time.sleep(10) # ATENTION : À SUPPRIMER (délais le temps que les containers nécessaires au traitement se montent)
 
 print("\n\n")
 print(" __  __  _____ _____  _____    _____  ___  __ ")
@@ -37,3 +38,6 @@ set_data_immutable()
 
 print("\n\n ========== Nettoyage et insertion des données dans statement ========== ")
 clean_data()
+
+# print("\n\n ========== Suppression des datasets ========== ")
+# drop_dataset()

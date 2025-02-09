@@ -882,7 +882,7 @@
     "Sweden": {
         "region": "European Region",
         "code_region": "EUR",
-        "climat": ["continental", "polaire"]
+        "climat": ["continental", "polar"]
     },
     "Switzerland": {
         "region": "European Region",

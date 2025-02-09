@@ -20,8 +20,8 @@ CREATE TABLE climat_type(
 CREATE TABLE country(
    id_country SERIAL,
    name VARCHAR(50) NOT NULL,
-   population BIGINT NOT NULL, -- Adapté pour de grandes populations
-   pib NUMERIC(18,2), -- Plus précis que MONEY
+   population BIGINT NOT NULL,
+   pib NUMERIC(18,2),
    latitude DOUBLE PRECISION,
    longitude DOUBLE PRECISION,
    id_continent INTEGER NOT NULL,
@@ -54,9 +54,6 @@ CREATE TABLE statement(
    recovered NUMERIC(20,0) NOT NULL,
    active NUMERIC(20,0) NOT NULL,
    total_tests NUMERIC(20,0),
-   new_deaths NUMERIC(20,0) DEFAULT 0,
-   new_cases NUMERIC(20,0) DEFAULT 0,
-   new_recovered NUMERIC(20,0) DEFAULT 0,
    id_disease INTEGER NOT NULL,
    id_country INTEGER,
    PRIMARY KEY(id_statement),

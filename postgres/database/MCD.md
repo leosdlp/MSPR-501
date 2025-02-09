@@ -14,9 +14,6 @@ erDiagram
         INTEGER recovered
         INTEGER active
         INTEGER total_tests
-        INTEGER new_deaths
-        INTEGER new_cases
-        INTEGER new_recovered
         INTEGER id_disease FK
         INTEGER id_country FK
     }

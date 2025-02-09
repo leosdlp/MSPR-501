@@ -16,10 +16,10 @@ import io
 import os
 import zipfile
 import requests
-from pyspark.sql import SparkSession  # type: ignore
 
+from spark.spark import spark_session
 
-spark = SparkSession.builder.appName("ReadCSVFromZip").getOrCreate()
+spark = spark_session()
 
 urls = [
     "https://www.kaggle.com/api/v1/datasets/download/imdevskp/h1n1-swine-flu-2009-pandemic-dataset",

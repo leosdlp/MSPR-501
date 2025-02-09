@@ -4,9 +4,8 @@ Il utilise Spark pour lire un fichier JSON, extraire les régions et les insére
 de la base de données.
 """
 
-from pyspark.sql import SparkSession        # type: ignore
 from pyspark.sql.functions import col       # type: ignore
-
+from spark.spark import spark_session
 from db.connection import get_connection
 from db.truncate_table import truncate_table
 
@@ -23,9 +22,7 @@ def get_region():
     Returns:
         list: Liste des régions extraites du fichier JSON. Les régions sont uniques et non nulles.
     """
-    spark = SparkSession.builder \
-        .appName("JSON to DataFrame") \
-        .getOrCreate()
+    spark = spark_session()
 
     json_file_path = "./json/pays_region.json"
     df = spark.read.option("multiline", "true").json(json_file_path)

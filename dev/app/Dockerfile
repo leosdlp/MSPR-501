@@ -1,34 +1,33 @@
-FROM openjdk:11-jdk-slim
+FROM apache/spark-py:v3.4.0
+
+USER root
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     python3-pip \
     curl \
     libpq-dev \
-    nano
+    wget \
+    nano && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install pyspark  \
     matplotlib  \
     requests \
-    pandas \
-    dash \
     psycopg2-binary \
     python-dotenv \
-    kagglehub && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
-RUN curl -O https://downloads.apache.org/spark/spark-3.4.4/spark-3.4.4-bin-hadoop3.tgz && \
-    tar -xvf spark-3.4.4-bin-hadoop3.tgz -C /opt/ && \
-    rm spark-3.4.4-bin-hadoop3.tgz
+    kagglehub
 
 WORKDIR /app
 
-RUN echo "alias ll='ls -al'" >> /root/.bashrc && \
-    echo "export PATH=$PATH:/app/bin/" >> /root/.bashrc
+RUN wget https://jdbc.postgresql.org/download/postgresql-42.6.0.jar && \
+    mkdir -p /opt/spark/jars && \
+    mv postgresql-42.6.0.jar /opt/spark/jars/
 
-ENV SPARK_HOME=/opt/spark-3.4.4-bin-hadoop3
-ENV PATH="$SPARK_HOME/bin:$PATH"
-ENV PYTHONPATH=/app
+RUN echo "alias ll='ls -al'" >> /root/.bashrc && \
+    echo "export PATH=$PATH:/app/bin/" >> /root/.bashrc && \
+    echo "export PYTHONPATH=/app" >> /root/.bashrc && \
+    export SPARK_HOME=/opt/spark/
 
 CMD ["tail", "-f", "/dev/null"]
-

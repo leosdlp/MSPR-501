@@ -1,13 +1,7 @@
-from psycopg2.extras import execute_batch  # type: ignore
-
-from db.connection import get_connection
 from spark.spark import spark_session
 
 def set_statement_data(df_final):
     spark = spark_session()
-
-    conn = get_connection()
-    cursor = conn.cursor()
 
     jdbc_url = "jdbc:postgresql://postgres:5432/mspr501"
     properties = {
@@ -18,9 +12,6 @@ def set_statement_data(df_final):
 
     df_final.write \
         .jdbc(url=jdbc_url, table="statement", mode="append", properties=properties)
-
-    cursor.close()
-    conn.close()
     
     spark.stop()
 

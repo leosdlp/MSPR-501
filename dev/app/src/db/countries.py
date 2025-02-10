@@ -6,7 +6,7 @@ et des fichiers JSON locaux.
 """
 
 import json
-import requests
+import requests # type: ignore
 from psycopg2.extras import execute_batch  # type: ignore
 
 from db.connection import get_connection
@@ -144,7 +144,8 @@ def set_data_countries():
                 or not latitude \
                 or not longitude \
                 or not pib \
-                or not id_region:
+                or not id_region \
+                or not iso_code:
                 continue
 
             id_continent = continent_map.get(continent.lower())

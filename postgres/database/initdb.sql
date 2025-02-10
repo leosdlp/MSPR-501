@@ -20,6 +20,7 @@ CREATE TABLE climat_type(
 CREATE TABLE country(
    id_country SERIAL,
    name VARCHAR(50) NOT NULL,
+   iso_code VARCHAR(5) NOT NULL,
    population BIGINT NOT NULL,
    pib NUMERIC(18,2),
    latitude DOUBLE PRECISION,

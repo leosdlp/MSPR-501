@@ -126,6 +126,7 @@ def set_data_countries():
             population = country.get("population")
             continent = country.get("region", "").strip() # Région (dans l'API) = Continent
             iso_code = country.get("cca3", "").strip()
+            cca2 = country.get("cca2")
             pib = gdp_map.get(iso_code, None)
             latlng = country.get("latlng", [])
             if len(latlng) >= 2:
@@ -150,7 +151,8 @@ def set_data_countries():
                 or not latitude \
                 or not longitude \
                 or not pib \
-                or not id_region:
+                or not id_region \
+                or not cca2:
                 continue
 
             continent = CONTINENT_FIX.get(continent, continent)
@@ -161,15 +163,15 @@ def set_data_countries():
                 continue
 
 
-            values.append((name, population, id_continent, pib, latitude, longitude, id_region))
+            values.append((name, cca2, population, id_continent, pib, latitude, longitude, id_region))
 
         if not values:
             print("[ERROR] Aucun pays valide à insérer.")
             return
 
         sql = """
-            INSERT INTO country (name, population, id_continent, pib, latitude, longitude, id_region)
-            VALUES (%s, %s, %s, %s, %s, %s, %s);
+            INSERT INTO country (name, iso_code, population, id_continent, pib, latitude, longitude, id_region)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
         """
         execute_batch(cursor, sql, values)
         conn.commit()

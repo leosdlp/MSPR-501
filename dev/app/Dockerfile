@@ -17,6 +17,7 @@ RUN pip3 install pyspark  \
     requests \
     psycopg2-binary \
     python-dotenv \
+    country_converter \
     kagglehub
 
 WORKDIR /app
@@ -28,6 +29,6 @@ RUN wget https://jdbc.postgresql.org/download/postgresql-42.6.0.jar && \
 RUN echo "alias ll='ls -al'" >> /root/.bashrc && \
     echo "export PATH=$PATH:/app/bin/" >> /root/.bashrc && \
     echo "export PYTHONPATH=/app" >> /root/.bashrc && \
-    export SPARK_HOME=/opt/spark/
+    echo "SPARK_HOME=/opt/spark/" >> /root/.bashrc
 
 CMD ["tail", "-f", "/dev/null"]

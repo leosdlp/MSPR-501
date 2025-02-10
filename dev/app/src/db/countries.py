@@ -149,12 +149,9 @@ def set_data_countries():
 
             id_continent = continent_map.get(continent.lower())
 
-            print()
-
             if not id_continent:
-                print(f"[WARNING] Continent inconnu pour {name} (Continent: {continent_fixed})")
+                print(f"[WARNING] Continent inconnu pour {name} (Continent: {continent})")
                 continue
-
 
             values.append((name, iso_code, population, id_continent, pib, latitude, longitude, id_region))
 

@@ -18,11 +18,6 @@ from db.country_climat_type import insert_country_climat_types
 API_KEY = "UKRG6rVwuY8wXXfyE1ZWhg==Pu6zZccZayVbGrZi"
 GDP_API_URL = "https://api.api-ninjas.com/v1/gdp?year=2020"
 
-CONTINENT_FIX = {
-    "Americas": "South America",
-    "Antarctic": "Antarctica"
-}
-
 PAYS_REGION_JSON = "./json/pays_region.json"
 
 def get_countries_data() :
@@ -122,11 +117,10 @@ def set_data_countries():
 
         values = []
         for country in countries_data:
-            name = country.get("name", {}).get("common", "").strip()
+            name = country.get("name", {}).get("common", "").strip().lower()
             population = country.get("population")
-            continent = country.get("region", "").strip() # Région (dans l'API) = Continent
+            continent = country.get("continents", "")[0].strip().lower()
             iso_code = country.get("cca3", "").strip()
-            cca2 = country.get("cca2")
             pib = gdp_map.get(iso_code, None)
             latlng = country.get("latlng", [])
             if len(latlng) >= 2:
@@ -135,8 +129,7 @@ def set_data_countries():
             else:
                 latitude = None
                 longitude = None
-
-            region = country_region.get(name, {}).get("region", "").strip()
+            region = country_region.get(name.title(), {}).get("region", "").strip().lower()
             cursor.execute("SELECT id_region FROM region WHERE name = %s;", (region,))
 
             print(f"[INFO] Préparation de l'insertion du pays : {name} (Région: {region})")
@@ -151,19 +144,19 @@ def set_data_countries():
                 or not latitude \
                 or not longitude \
                 or not pib \
-                or not id_region \
-                or not cca2:
+                or not id_region:
                 continue
 
-            continent = CONTINENT_FIX.get(continent, continent)
-            id_continent = continent_map.get(continent)
+            id_continent = continent_map.get(continent.lower())
+
+            print()
 
             if not id_continent:
-                print(f"[WARNING] Continent inconnu pour {name} (Région: {continent})")
+                print(f"[WARNING] Continent inconnu pour {name} (Continent: {continent_fixed})")
                 continue
 
 
-            values.append((name, cca2, population, id_continent, pib, latitude, longitude, id_region))
+            values.append((name, iso_code, population, id_continent, pib, latitude, longitude, id_region))
 
         if not values:
             print("[ERROR] Aucun pays valide à insérer.")

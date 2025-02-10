@@ -63,7 +63,7 @@ def set_disease():
     sql = "INSERT INTO disease (id_disease, name, is_pandemic) VALUES (%s, %s, %s)"
 
     values = [
-        (data["id"], name, data["isPandemic"])
+        (data["id"], name.lower(), data["isPandemic"])
         for name, data in disease.items()
     ]
 

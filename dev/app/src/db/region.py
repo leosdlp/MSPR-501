@@ -64,6 +64,7 @@ def set_region():
     regions_list = get_region()
 
     for region in regions_list:
+        region = region.lower()
         cursor.execute("""
             INSERT INTO region (name) 
             VALUES (%s) 

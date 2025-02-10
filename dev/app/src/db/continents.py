@@ -57,7 +57,7 @@ def set_data_continents():
 
     try:
         sql = "INSERT INTO continent (name) VALUES (%s) ON CONFLICT (name) DO NOTHING;"
-        values = [(continent,) for continent in continents]
+        values = [(continent.lower(),) for continent in continents]
 
         execute_batch(cursor, sql, values)
         conn.commit()

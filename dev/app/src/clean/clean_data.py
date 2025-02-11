@@ -16,25 +16,25 @@ def clean_data():
     except Exception as exception:
         print(f"[ERROR] Une erreur s'est produite pour : covid. {exception}")
 
-    print("\n ===== Nettoyage des données pour h1n1 ===== ")
-    df = clean_h1n1()
-    try:
-        df = set_statement_data(df)
-    except Exception as exception:
-        print(f"[ERROR] Une erreur s'est produite pour : h1n1. {exception}")
+    # print("\n ===== Nettoyage des données pour h1n1 ===== ")
+    # df = clean_h1n1()
+    # try:
+    #     df = set_statement_data(df)
+    # except Exception as exception:
+    #     print(f"[ERROR] Une erreur s'est produite pour : h1n1. {exception}")
 
-    print("\n ===== Nettoyage des données pour mpox ===== ")
-    df = clean_mpox()
-    try:
-        df = set_statement_data(df)
-    except Exception as exception:
-        print(f"[ERROR] Une erreur s'est produite pour : mpox. {exception}")
+    # print("\n ===== Nettoyage des données pour mpox ===== ")
+    # df = clean_mpox()
+    # try:
+    #     df = set_statement_data(df)
+    # except Exception as exception:
+    #     print(f"[ERROR] Une erreur s'est produite pour : mpox. {exception}")
 
-    print("\n ===== Nettoyage des données pour sras ===== ")
-    df = clean_sras()
-    try:
-        df = set_statement_data(df)
-    except Exception as exception:
-        print(f"[ERROR] Une erreur s'est produite pour : sras. {exception}")
+    # print("\n ===== Nettoyage des données pour sras ===== ")
+    # df = clean_sras()
+    # try:
+    #     df = set_statement_data(df)
+    # except Exception as exception:
+    #     print(f"[ERROR] Une erreur s'est produite pour : sras. {exception}")
 
     spark.stop()

@@ -1,11 +1,12 @@
 import os
-from utils.get_country_code_by_name import get_country_code_by_name as get_country_code
 from pyspark.sql.functions import udf, lit, col     # type: ignore
 from pyspark.sql import functions as F              # type: ignore
 from pyspark.sql.types import IntegerType           # type: ignore
 
+from utils.get_country_code_by_name import get_country_code_by_name as get_country_code
 from db.connection import get_connection
 from spark.spark import spark_session
+
 
 def clean_h1n1():
     spark = spark_session()

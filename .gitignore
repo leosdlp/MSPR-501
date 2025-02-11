@@ -1,9 +1,5 @@
-/etl/data_files/
 .vscode/
-dev/app/src/data_files
-dev/app/src/clean/__pycache__
-dev/app/src/data/__pycache__
-dev/app/src/db/__pycache__
-dev/app/src/spark/__pycache__
-dev/app/src/java_opts.txt
+*data_files
+*_pycache__
+*java_opts.txt
 *.log

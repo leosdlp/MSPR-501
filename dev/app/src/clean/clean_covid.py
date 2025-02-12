@@ -1,13 +1,56 @@
-import os
+"""
+Module de nettoyage et d'agrégation des données COVID-19.
+
+Ce module utilise PySpark pour lire et transformer un fichier CSV contenant les données COVID-19, 
+les enrichit avec des informations issues d'une base de données, et retourne un DataFrame PySpark 
+agrégé prêt pour insertion ou analyse.
+
+Fonctionnalités principales :
+- Lecture et transformation des données à l'aide de PySpark.
+- Enrichissement avec des données pays et maladie depuis une base de données.
+- Agrégation des données par date, pays et maladie.
+
+Dépendances :
+- PySpark
+- Une base de données contenant les informations de pays et de maladies.
+- Une fonction utilitaire pour convertir un nom de pays en code ISO.
+
+"""
+
 from pyspark.sql.functions import col, udf, lit, sum as F_sum   # type: ignore
-from pyspark.sql import functions as F                          # type: ignore
 from pyspark.sql.types import IntegerType                       # type: ignore
+from pyspark.sql.types import StringType                        # type: ignore
+
 from utils.get_country_code_by_name import get_country_code_by_name as get_country_code
 from db.connection import get_connection
 from spark.spark import spark_session
-from pyspark.sql.types import StringType # type: ignore
+
 
 def clean_covid():
+    """
+    Nettoie et agrège les données COVID-19.
+
+    Cette fonction lit un fichier CSV contenant les données COVID-19, les enrichit avec des informations 
+    issues d'une base de données (codes ISO des pays et ID de la maladie), et agrège les données par 
+    date, pays et maladie. 
+
+    Étapes principales :
+    1. Lecture du fichier CSV contenant les données brutes COVID-19.
+    2. Récupération des codes ISO des pays et des identifiants de maladie depuis une base de données.
+    3. Ajout des codes ISO aux données COVID-19 via une jointure.
+    4. Sélection des colonnes pertinentes et suppression des lignes avec des valeurs nulles.
+    5. Agrégation des données par date, pays et maladie.
+
+    Returns:
+        pyspark.sql.DataFrame: Un DataFrame PySpark contenant les données agrégées avec les colonnes suivantes :
+            - `_date` : Date des données agrégées.
+            - `id_country` : Identifiant du pays.
+            - `id_disease` : Identifiant de la maladie.
+            - `Confirmed` : Nombre total de cas confirmés.
+            - `Deaths` : Nombre total de décès.
+            - `Recovered` : Nombre total de cas récupérés.
+            - `Active` : Nombre total de cas actifs.
+    """
     spark = spark_session()
 
     df = spark.read.csv(

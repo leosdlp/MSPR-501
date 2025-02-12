@@ -5,7 +5,7 @@ dictionnaire dans la base de données après avoir vidé la table.
 """
 
 import json
-from psycopg2.extras import execute_batch  # type: ignore
+from psycopg2.extras import execute_batch   # type: ignore
 
 from db.connection import get_connection
 from db.truncate_table import truncate_table

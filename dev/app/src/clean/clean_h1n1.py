@@ -1,7 +1,27 @@
-import os
-from pyspark.sql.functions import udf, lit, col     # type: ignore
-from pyspark.sql import functions as F              # type: ignore
-from pyspark.sql.types import IntegerType           # type: ignore
+"""
+Module de nettoyage des données pour la pandémie de grippe H1N1 de 2009.
+
+Ce module utilise PySpark pour nettoyer et transformer les données brutes sur la pandémie de grippe H1N1. 
+Les données sont enrichies avec des informations sur les pays, agrégées, et associées à une maladie 
+spécifique avant d'être prêtes à être insérées dans une base de données.
+
+Fonctionnalités principales :
+- Chargement et partitionnement des données brutes.
+- Enrichissement des données avec les informations sur les pays à partir d'une base de données.
+- Association des données à l'identifiant de la maladie H1N1.
+- Agrégation des cas et décès cumulés par date, pays et maladie.
+- Gestion des valeurs manquantes et suppression des colonnes inutiles.
+
+Dépendances :
+- PySpark pour le traitement et l'agrégation des données.
+- Une base de données pour récupérer les informations sur les pays et les maladies.
+- Un fichier CSV contenant les données brutes sur H1N1.
+
+"""
+
+from pyspark.sql.functions import udf, lit, col, sum as F_sum   # type: ignore
+from pyspark.sql.types import IntegerType                       # type: ignore
+from pyspark.sql.types import StringType                        # type: ignore
 
 from utils.get_country_code_by_name import get_country_code_by_name as get_country_code
 from db.connection import get_connection
@@ -9,6 +29,25 @@ from spark.spark import spark_session
 
 
 def clean_h1n1():
+    """
+    Nettoie et transforme les données brutes sur la pandémie de grippe H1N1.
+
+    Cette fonction effectue les opérations suivantes :
+    1. Chargement des données brutes à partir d'un fichier CSV.
+    2. Partitionnement des données pour optimiser le traitement avec PySpark.
+    3. Enrichissement des données avec les identifiants des pays depuis une base de données.
+    4. Association des données à l'identifiant de la maladie H1N1.
+    5. Agrégation des cas et décès cumulés par date, pays et maladie.
+    6. Gestion des valeurs manquantes pour garantir la qualité des données finales.
+
+    Returns:
+        pyspark.sql.DataFrame: Un DataFrame PySpark contenant les données nettoyées, enrichies et agrégées, 
+        prêtes pour l'insertion dans une base de données.
+
+    Exceptions:
+        Lève des erreurs si des problèmes surviennent lors de l'accès à la base de données ou du traitement
+        des données.
+    """
     spark = spark_session()
 
     df = spark.read.csv("data_files/h1n1-swine-flu-2009-pandemic-dataset/data.csv", header=True, inferSchema=True)

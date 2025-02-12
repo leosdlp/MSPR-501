@@ -7,7 +7,6 @@ fixes liées aux maladies dans la table `disease`. Ensuite, des données fixes s
 les tables appropriées, avant de nettoyer et insérer les données dans la table `statement`.
 """
 
-import time
 
 from data.get_brut_data import get_brut_data
 from db.disease import set_disease
@@ -18,6 +17,11 @@ from data.drop_dataset import drop_dataset
 
 # time.sleep(10) # ATENTION : À SUPPRIMER (délais le temps que les containers nécessaires au traitement se montent)
 
+print("======================================================================================")
+print("======================================================================================")
+print(f"===================== DATE ET HEURE : {datetime.now()} =====================")
+print("======================================================================================")
+print("======================================================================================")
 print("\n\n")
 print(" __  __  _____ _____  _____    _____  ___  __ ")
 print("|  \/  |/ ____|  __ \|  __ \  | ____|/ _ \/_ |")
@@ -41,3 +45,8 @@ clean_data()
 
 # print("\n\n ========== Suppression des datasets ========== ")
 # drop_dataset()
+print("======================================================================================")
+print("======================================================================================")
+print(f"===================== DATE ET HEURE : {datetime.now()} =====================")
+print("======================================================================================")
+print("======================================================================================")

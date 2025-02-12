@@ -25,6 +25,7 @@ from pyspark.sql.types import StringType                        # type: ignore
 
 from db.connection import get_connection
 from spark.spark import spark_session
+from utils.get_country_code_by_name import get_country_code_by_name as get_country_code
 
 
 def clean_sras():
@@ -49,49 +50,60 @@ def clean_sras():
     """
     spark = spark_session()
 
-    df = spark.read.csv("data_files/sars-outbreak-2003-complete-dataset/sars_2003_complete_dataset_clean.csv", header=True, inferSchema=True)
+    df = spark.read.csv(
+        "data_files/sars-outbreak-2003-complete-dataset/sars_2003_complete_dataset_clean.csv", 
+        header=True,
+        inferSchema=True
+    )
+
+    df = df.repartition(6)
+    print(df.rdd.getNumPartitions())
 
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT id_country, name FROM country")
-    countries = {name: id_country for id_country, name in cursor.fetchall()}
+    cursor.execute("SELECT id_country, iso_code FROM country")
+    countries = {iso_code: id_country for id_country, iso_code in cursor.fetchall()}
 
-    def get_country_id(name):
-        return countries.get(name, None)
+    countries_data = [(id_country, iso_code) for iso_code, id_country in countries.items()]
+    countries_columns = ["id_country", "iso_code"]
+    countries_df = spark.createDataFrame(countries_data, countries_columns)
 
-    get_country_id_udf = udf(get_country_id, IntegerType())
+    @udf(StringType())
+    def get_country_code_udf(country_name):
+        return get_country_code(country_name) if country_name else None
 
-    df = df.withColumn("id_country", get_country_id_udf(col("Country")))
+    df = df.withColumn("iso_code", get_country_code_udf(col("`Country`")))
+
+    df = df.join(
+        countries_df,
+        df["iso_code"] == countries_df["iso_code"],
+        how="left"
+    ).drop("iso_code")
 
     cursor.execute("SELECT id_disease FROM disease WHERE name = 'sars'")
     id_disease = cursor.fetchone()[0]
 
     df = df.withColumn("id_disease", lit(id_disease).cast(IntegerType()))
 
-    df_aggregated = df.groupBy(
-        col("date"), 
-        col("id_country"), 
-        col("id_disease")
-    ).agg(
-        F.sum("Cumulative number of case(s)").cast(IntegerType()).alias("Cumulative number of case(s)"),
-        F.sum("Number of deaths").cast(IntegerType()).alias("Number of deaths"),
-        F.sum("Number recovered").cast(IntegerType()).alias("Number recovered")
-    )
-
-    df_final = df_aggregated.select(
+    df = df.select(
         col("Date").alias("_date"),
-        col("`Cumulative number of case(s)`").alias("confirmed"),
-        col("`Number of deaths`").alias("deaths"),
-        col("`Number recovered`").alias("recovered"),
+        col("Cumulative number of case(s)").cast(IntegerType()),
+        col("Number of deaths").cast(IntegerType()),
+        col("Number recovered").cast(IntegerType()),
         col("id_disease"),
         col("id_country")
-    )
+    ).dropna()
 
-    df_final = df_final.dropna()
-    df_final = df_final.dropDuplicates()
+    df_aggregated = df.groupBy(
+        "_date", "id_country", "id_disease"
+    ).agg(
+        F_sum("Cumulative number of case(s)").alias("Confirmed"),
+        F_sum("Number of deaths").alias("Deaths"),
+        F_sum("Number recovered").alias("Recovered"),
+    )
 
     cursor.close()
     conn.close()
 
-    return df_final
+    return df_aggregated

@@ -50,7 +50,14 @@ def clean_h1n1():
     """
     spark = spark_session()
 
-    df = spark.read.csv("data_files/h1n1-swine-flu-2009-pandemic-dataset/data.csv", header=True, inferSchema=True)
+    df = spark.read.csv(
+        "data_files/h1n1-swine-flu-2009-pandemic-dataset/data.csv", 
+        header=True,
+        inferSchema=True
+    )
+
+    df = df.repartition(6)
+    print(df.rdd.getNumPartitions())
 
     conn = get_connection()
     cursor = conn.cursor()
@@ -58,14 +65,21 @@ def clean_h1n1():
     cursor.execute("SELECT id_country, iso_code FROM country")
     countries = {iso_code: id_country for id_country, iso_code in cursor.fetchall()}
 
-    def get_country_id(country_name):
-        """Retourne l'id du pays si le code ISO2 est en base, sinon None"""
-        iso_code = get_country_code(country_name)  # Conversion du nom en code ISO2
-        return countries.get(iso_code, None)
+    countries_data = [(id_country, iso_code) for iso_code, id_country in countries.items()]
+    countries_columns = ["id_country", "iso_code"]
+    countries_df = spark.createDataFrame(countries_data, countries_columns)
 
-    get_country_id_udf = udf(get_country_id, IntegerType())
+    @udf(StringType())
+    def get_country_code_udf(country_name):
+        return get_country_code(country_name) if country_name else None
 
-    df = df.withColumn("id_country", get_country_id_udf(col("Country"))).dropna(subset=["id_country"])
+    df = df.withColumn("iso_code", get_country_code_udf(col("`Country`")))
+
+    df = df.join(
+        countries_df,
+        df["iso_code"] == countries_df["iso_code"],
+        how="left"
+    ).drop("iso_code")
 
     cursor.execute("SELECT id_disease FROM disease WHERE name = 'h1n1'")
     id_disease = cursor.fetchone()[0]
@@ -78,9 +92,16 @@ def clean_h1n1():
         col("`Cumulative no. of deaths`").alias("Deaths"),
         col("id_disease"),
         col("id_country")
-    ).dropna().dropDuplicates()
+    ).dropna()
+
+    df_aggregated = df_final.groupBy(
+        "_date", "id_country", "id_disease"
+    ).agg(
+        F_sum("Confirmed").alias("Confirmed"),
+        F_sum("Deaths").alias("Deaths")
+    )
 
     cursor.close()
     conn.close()
 
-    return df_final
+    return df_aggregated

@@ -7,6 +7,7 @@ fixes liées aux maladies dans la table `disease`. Ensuite, des données fixes s
 les tables appropriées, avant de nettoyer et insérer les données dans la table `statement`.
 """
 
+from datetime import datetime
 
 from data.get_brut_data import get_brut_data
 from db.disease import set_disease
@@ -22,6 +23,7 @@ print("=========================================================================
 print(f"===================== DATE ET HEURE : {datetime.now()} =====================")
 print("======================================================================================")
 print("======================================================================================")
+
 print("\n\n")
 print(" __  __  _____ _____  _____    _____  ___  __ ")
 print("|  \/  |/ ____|  __ \|  __ \  | ____|/ _ \/_ |")
@@ -31,20 +33,21 @@ print("| |  | |____) | |    | | \ \   ___) | |_| || |")
 print("|_|  |_|_____/|_|    |_|  \_\ |____/ \___/ |_|")
 print("\n\n")
 
-# print("\n\n ========== Début de la récupération des datas brutes ========== ")
-# get_brut_data()
+print("\n\n ========== Début de la récupération des datas brutes ========== ")
+get_brut_data()
 
-# print("\n\n ========== Insertion des données dans disease ========== ")
-# set_disease()
+print("\n\n ========== Insertion des données dans disease ========== ")
+set_disease()
 
-# print("\n\n ========== Insertion des données fixes dans les tables ========== ")
-# set_data_immutable()
+print("\n\n ========== Insertion des données fixes dans les tables ========== ")
+set_data_immutable()
 
 print("\n\n ========== Nettoyage et insertion des données dans statement ========== ")
 clean_data()
 
-# print("\n\n ========== Suppression des datasets ========== ")
-# drop_dataset()
+print("\n\n ========== Suppression des datasets ========== ")
+drop_dataset()
+
 print("======================================================================================")
 print("======================================================================================")
 print(f"===================== DATE ET HEURE : {datetime.now()} =====================")

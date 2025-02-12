@@ -47,6 +47,7 @@ def set_statement(df_final):
         Exception: Si une erreur se produit lors de l'écriture dans la base de données.
     """
     spark = spark_session()
+    df_final.show(50)
 
     jdbc_url = "jdbc:postgresql://postgres:5432/mspr501"
     properties = {
@@ -57,7 +58,7 @@ def set_statement(df_final):
 
     df_final.write \
         .jdbc(url=jdbc_url, table="statement", mode="append", properties=properties)
-    
+
     spark.stop()
 
-    print(f"[INFO] Lignes insérées dans la table 'statement'.")
+    print("[INFO] Lignes insérées dans la table 'statement'.")

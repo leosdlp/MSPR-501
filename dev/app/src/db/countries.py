@@ -33,9 +33,13 @@ def get_countries_from_api() :
         list or None: Liste des pays si la requête réussit, sinon None.
     """
     try:
-        response = requests.get("https://restcountries.com/v3.1/all", timeout=10)
-        response.raise_for_status()
-        countries_data = response.json()
+        code = 500
+        while code != 200:
+            response = requests.get("https://restcountries.com/v3.1/all", timeout=10)
+            response.raise_for_status()
+            countries_data = response.json()
+            code = response.status_code
+            time.sleep(.5)
         return countries_data
     except requests.exceptions.RequestException as e:
         print(f"[ERROR] Problème lors de la récupération des pays via l'API : {e}")

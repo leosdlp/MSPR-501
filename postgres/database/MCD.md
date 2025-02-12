@@ -33,6 +33,7 @@ erDiagram
     country {
         SERIAL id_country PK
         VARCHAR(50) name
+        VARCHAR(5) iso_code
         INTEGER population
         DOUBLE pib
         DOUBLE latitude

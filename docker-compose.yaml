@@ -6,7 +6,7 @@ services:
     container_name: mspr501_api_flask
     restart: unless-stopped
     ports:
-      - "5000:5000"
+      - "5001:5000"
 
   # etl:
   #   build:

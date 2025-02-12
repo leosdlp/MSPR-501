@@ -6,26 +6,22 @@ et des fichiers JSON locaux.
 """
 
 import json
-import requests
-from psycopg2.extras import execute_batch  # type: ignore
+import time
+import requests # type: ignore
+from psycopg2.extras import execute_batch   # type: ignore
 
 from db.connection import get_connection
 from db.truncate_table import truncate_table
 from db.pib import fetch_gdp_data
-from db.country_climat_type import insert_country_climat_types
+from db.country_climat_type import set_country_climat_types
 
 
 API_KEY = "UKRG6rVwuY8wXXfyE1ZWhg==Pu6zZccZayVbGrZi"
 GDP_API_URL = "https://api.api-ninjas.com/v1/gdp?year=2020"
 
-CONTINENT_FIX = {
-    "Americas": "South America",
-    "Antarctic": "Antarctica"
-}
-
 PAYS_REGION_JSON = "./json/pays_region.json"
 
-def get_countries_data() :
+def get_countries_from_api() :
     """
     Récupère les données des pays depuis l'API Restcountries.
 
@@ -37,15 +33,19 @@ def get_countries_data() :
         list or None: Liste des pays si la requête réussit, sinon None.
     """
     try:
-        response = requests.get("https://restcountries.com/v3.1/all", timeout=10)
-        response.raise_for_status()
-        countries_data = response.json()
+        code = 500
+        while code != 200:
+            response = requests.get("https://restcountries.com/v3.1/all", timeout=10)
+            response.raise_for_status()
+            countries_data = response.json()
+            code = response.status_code
+            time.sleep(.5)
         return countries_data
     except requests.exceptions.RequestException as e:
         print(f"[ERROR] Problème lors de la récupération des pays via l'API : {e}")
         return
 
-def get_country_region() :
+def get_countries_region_from_json() :
     """
     Charge les données de la région des pays à partir du fichier JSON local.
 
@@ -89,7 +89,7 @@ def fetch_climat_type():
         cursor.close()
         conn.close()
 
-def set_data_countries():
+def set_countries():
     """
     Récupère et insère les données des pays dans la base de données.
 
@@ -107,9 +107,9 @@ def set_data_countries():
     """
     truncate_table("country")
 
-    countries_data = get_countries_data()
+    countries_data = get_countries_from_api()
 
-    country_region = get_country_region()
+    country_region = get_countries_region_from_json()
 
     gdp_map = fetch_gdp_data(API_KEY, GDP_API_URL)
 
@@ -122,9 +122,9 @@ def set_data_countries():
 
         values = []
         for country in countries_data:
-            name = country.get("name", {}).get("common", "").strip()
+            name = country.get("name", {}).get("common", "").strip().lower()
             population = country.get("population")
-            continent = country.get("region", "").strip() # Région (dans l'API) = Continent
+            continent = country.get("continents", "")[0].strip().lower()
             iso_code = country.get("cca3", "").strip()
             pib = gdp_map.get(iso_code, None)
             latlng = country.get("latlng", [])
@@ -134,8 +134,7 @@ def set_data_countries():
             else:
                 latitude = None
                 longitude = None
-
-            region = country_region.get(name, {}).get("region", "").strip()
+            region = country_region.get(name.title(), {}).get("region", "").strip().lower()
             cursor.execute("SELECT id_region FROM region WHERE name = %s;", (region,))
 
             print(f"[INFO] Préparation de l'insertion du pays : {name} (Région: {region})")
@@ -150,32 +149,31 @@ def set_data_countries():
                 or not latitude \
                 or not longitude \
                 or not pib \
-                or not id_region:
+                or not id_region \
+                or not iso_code:
                 continue
 
-            continent = CONTINENT_FIX.get(continent, continent)
-            id_continent = continent_map.get(continent)
+            id_continent = continent_map.get(continent.lower())
 
             if not id_continent:
-                print(f"[WARNING] Continent inconnu pour {name} (Région: {continent})")
+                print(f"[WARNING] Continent inconnu pour {name} (Continent: {continent})")
                 continue
 
-
-            values.append((name, population, id_continent, pib, latitude, longitude, id_region))
+            values.append((name, iso_code, population, id_continent, pib, latitude, longitude, id_region))
 
         if not values:
             print("[ERROR] Aucun pays valide à insérer.")
             return
 
         sql = """
-            INSERT INTO country (name, population, id_continent, pib, latitude, longitude, id_region)
-            VALUES (%s, %s, %s, %s, %s, %s, %s);
+            INSERT INTO country (name, iso_code, population, id_continent, pib, latitude, longitude, id_region)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
         """
         execute_batch(cursor, sql, values)
         conn.commit()
         print(f"[INFO] {len(values)} pays insérés dans la table 'country'.")
 
-        insert_country_climat_types()
+        set_country_climat_types()
 
     except Exception as e:
         print(f"[ERROR] Problème lors de l'insertion des pays en base : {e}")

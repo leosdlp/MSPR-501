@@ -15,7 +15,7 @@ Exemple d'utilisation :
 import io
 import os
 import zipfile
-import requests
+import requests # type: ignore
 
 from spark.spark import spark_session
 

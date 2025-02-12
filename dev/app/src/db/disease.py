@@ -5,7 +5,7 @@ dictionnaire dans la base de données après avoir vidé la table.
 """
 
 import json
-from psycopg2.extras import execute_batch  # type: ignore
+from psycopg2.extras import execute_batch   # type: ignore
 
 from db.connection import get_connection
 from db.truncate_table import truncate_table
@@ -63,7 +63,7 @@ def set_disease():
     sql = "INSERT INTO disease (id_disease, name, is_pandemic) VALUES (%s, %s, %s)"
 
     values = [
-        (data["id"], name, data["isPandemic"])
+        (data["id"], name.lower(), data["isPandemic"])
         for name, data in disease.items()
     ]
 

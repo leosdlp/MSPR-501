@@ -4,7 +4,7 @@ l'API API-Ninjas. La fonction permet de collecter ces données et de les convert
 où la clé est le code du pays et la valeur est le PIB nominal du pays.
 """
 
-import requests
+import requests # type: ignore
 
 
 def fetch_gdp_data(api_key, gdp_api_url):

@@ -54,16 +54,19 @@ def clean_covid():
     spark = spark_session()
 
     df = spark.read.csv(
-            "data_files/corona-virus-report/covid_19_clean_complete.csv",
-            header=True,
-            inferSchema=True
-        )
+        "data_files/corona-virus-report/covid_19_clean_complete.csv",
+        header=True,
+        inferSchema=True
+    )
+
+    df = df.repartition(6)
+    print(df.rdd.getNumPartitions())
+
     conn = get_connection()
     cursor = conn.cursor()
-
     cursor.execute("SELECT id_country, iso_code FROM country")
     countries = {iso_code: id_country for id_country, iso_code in cursor.fetchall()}
-    
+
     countries_data = [(id_country, iso_code) for iso_code, id_country in countries.items()]
     countries_columns = ["id_country", "iso_code"]
     countries_df = spark.createDataFrame(countries_data, countries_columns)
@@ -84,40 +87,27 @@ def clean_covid():
     id_disease = cursor.fetchone()[0]
 
     df = df.withColumn("id_disease", lit(id_disease).cast(IntegerType()))
-    df = df.drop("Province/State").drop("Lat").drop("Long").drop("Lat").drop("WHO Region")
 
-    # df = df.dropna()
+    df = df.select(
+        col("Date").alias("_date"),
+        col("Confirmed").cast(IntegerType()),
+        col("Deaths").cast(IntegerType()),
+        col("Recovered").cast(IntegerType()),
+        col("Active").cast(IntegerType()),
+        col("id_disease"),
+        col("id_country")
+    ).dropna()
 
-    print(df.count())
-    # df_final = df.select(
-    #     col("Date").alias("_date"),
-    #     col("Confirmed"),
-    #     col("Deaths"),
-    #     col("Recovered"),
-    #     col("Active"),
-    #     col("id_disease"),
-    #     col("id_country")
-    # )
-
-    # df_final.printSchema()
-
-
-    
     df_aggregated = df.groupBy(
-        col("Date"), 
-        col("id_country"), 
-        col("id_disease")
+        "_date", "id_country", "id_disease"
     ).agg(
-        F_sum("Confirmed").cast(IntegerType()).alias("Confirmed"),
-        F_sum("Deaths").cast(IntegerType()).alias("Deaths"),
-        F_sum("Recovered").cast(IntegerType()).alias("Recovered"),
-        F_sum("Active").cast(IntegerType()).alias("Active")
+        F_sum("Confirmed").alias("Confirmed"),
+        F_sum("Deaths").alias("Deaths"),
+        F_sum("Recovered").alias("Recovered"),
+        F_sum("Active").alias("Active")
     )
-
-
-    
 
     cursor.close()
     conn.close()
 
-    # return df_final
+    return df_aggregated

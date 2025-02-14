@@ -18,7 +18,8 @@ RUN pip3 install pyspark  \
     psycopg2-binary \
     python-dotenv \
     country_converter \
-    kagglehub
+    kagglehub \
+    pylint
 
 WORKDIR /app
 

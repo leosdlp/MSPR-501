@@ -4,7 +4,7 @@ Il utilise Spark pour lire un fichier JSON, extraire les régions et les insére
 de la base de données.
 """
 
-from pyspark.sql.functions import col       # type: ignore
+from pyspark.sql.functions import col   # type: ignore
 from spark.spark import spark_session
 from db.connection import get_connection
 from db.truncate_table import truncate_table

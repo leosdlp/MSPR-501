@@ -1,68 +1,67 @@
-import os
-from pyspark.sql.functions import col, udf, lit, sum as F_sum   # type: ignore
-from pyspark.sql import functions as F                          # type: ignore
-from pyspark.sql.types import IntegerType                       # type: ignore
-from utils.get_country_code_by_name import get_country_code_by_name as get_country_code
+"""
+Module de nettoyage et d'agrégation des données COVID-19.
+
+Ce module utilise PySpark pour lire et transformer un fichier CSV contenant les données COVID-19,
+les enrichit avec des informations issues d'une base de données, et retourne un DataFrame PySpark
+agrégé prêt pour insertion ou analyse.
+
+Optimisations :
+- Utilisation d'un schéma explicite pour éviter l'inférence automatique
+- Récupération optimisée des données pays et maladie depuis la base
+- Remplacement de l'UDF par une transformation RDD plus performante
+- Ajout de `dropDuplicates()` pour éviter les doublons
+- Suppression des valeurs nulles après l'agrégation
+
+Dépendances :
+- PySpark
+- Une base de données contenant les informations de pays et de maladies.
+- Une fonction utilitaire pour convertir un nom de pays en code ISO.
+"""
+
+from pyspark.sql.functions import col, lit, sum as F_sum                        # type: ignore
+from pyspark.sql.types import IntegerType, StringType, StructType, StructField  # type: ignore
 from db.connection import get_connection
 from spark.spark import spark_session
-from pyspark.sql.types import StringType # type: ignore
 
 def clean_covid():
     spark = spark_session()
 
+    schema = StructType([
+        StructField("Date", StringType(), True),
+        StructField("Country/Region", StringType(), True),
+        StructField("Confirmed", IntegerType(), True),
+        StructField("Deaths", IntegerType(), True),
+        StructField("Recovered", IntegerType(), True),
+        StructField("Active", IntegerType(), True)
+    ])
+
     df = spark.read.csv(
-            "data_files/corona-virus-report/covid_19_clean_complete.csv",
-            header=True,
-            inferSchema=True
-        )
+        "data_files/corona-virus-report/covid_19_clean_complete.csv",
+        header=True,
+        schema=schema
+    )
+
+    df = df.repartition(6)
+
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT id_country, iso_code FROM country")
-    countries = {iso_code: id_country for id_country, iso_code in cursor.fetchall()}
-    
-    countries_data = [(id_country, iso_code) for iso_code, id_country in countries.items()]
-    countries_columns = ["id_country", "iso_code"]
-    countries_df = spark.createDataFrame(countries_data, countries_columns)
+    cursor.execute("SELECT id_country, name FROM country")
+    countries_list = cursor.fetchall()
+    countries_dict = {name: id_country for id_country, name in countries_list}
 
-    @udf(StringType())
-    def get_country_code_udf(country_name):
-        return get_country_code(country_name) if country_name else None
-
-    df = df.withColumn("iso_code", get_country_code_udf(col("`Country/Region`")))
-
-    df = df.join(
-        countries_df,
-        df["iso_code"] == countries_df["iso_code"],
-        how="left"
-    ).drop("iso_code")
+    df = df.rdd.map(lambda row: row + (countries_dict.get(row[1], None),)).toDF(
+        df.schema.add("id_country", IntegerType())
+    )
 
     cursor.execute("SELECT id_disease FROM disease WHERE name = 'covid'")
     id_disease = cursor.fetchone()[0]
 
     df = df.withColumn("id_disease", lit(id_disease).cast(IntegerType()))
-    df = df.drop("Province/State").drop("Lat").drop("Long").drop("Lat").drop("WHO Region")
 
-    # df = df.dropna()
-
-    print(df.count())
-    # df_final = df.select(
-    #     col("Date").alias("_date"),
-    #     col("Confirmed"),
-    #     col("Deaths"),
-    #     col("Recovered"),
-    #     col("Active"),
-    #     col("id_disease"),
-    #     col("id_country")
-    # )
-
-    # df_final.printSchema()
-
-
-    
     df_aggregated = df.groupBy(
-        col("Date"), 
-        col("id_country"), 
+        col("Date"),
+        col("id_country"),
         col("id_disease")
     ).agg(
         F_sum("Confirmed").cast(IntegerType()).alias("Confirmed"),
@@ -71,10 +70,17 @@ def clean_covid():
         F_sum("Active").cast(IntegerType()).alias("Active")
     )
 
-
-    
+    df_final = df_aggregated.select(
+        col("Date").alias("_date"),
+        col("Confirmed"),
+        col("Deaths"),
+        col("Recovered"),
+        col("Active"),
+        col("id_disease"),
+        col("id_country")
+    ).dropna().dropDuplicates()
 
     cursor.close()
     conn.close()
 
-    # return df_final
+    return df_final

@@ -6,7 +6,7 @@ de données.
 """
 
 import json
-from psycopg2.extras import execute_batch  # type: ignore
+from psycopg2.extras import execute_batch   # type: ignore
 
 from db.connection import get_connection
 from db.truncate_table import truncate_table
@@ -51,7 +51,7 @@ def get_existing_climat_types():
     conn.close()
     return climat_types
 
-def insert_country_climat_types():
+def set_country_climat_types():
     """
     Insère les relations pays-climat dans la table pivot `country_climat_type`.
 

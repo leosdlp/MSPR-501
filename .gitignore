@@ -3,3 +3,4 @@
 *_pycache__
 *java_opts.txt
 *.log
+.venv/

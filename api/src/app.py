@@ -12,8 +12,8 @@ Fonctionnalités principales :
 """
 
 import sys
-from flask import Flask
-from flask_restx import Api
+from flask import Flask         # type: ignore
+from flask_restx import Api     # type: ignore
 from controller import climat_type_controller, continent_controller, country_climat_type_controller
 from controller import country_controller, disease_controller, region_controller, statement_controller
 from connect_db import get_db_connection, DBConnection
@@ -77,8 +77,7 @@ for blueprint in blueprints:
 
 if __name__ == '__main__':
     # Démarre l'application Flask en mode débogage.
-    app.run(debug=True)
-
+    app.run(host='0.0.0.0', port=5000, debug=True)
 
 # Fini :
     # - app.py

@@ -18,11 +18,13 @@ country_namespace = Namespace('country', description='Gestion des pays')
 country_model = country_namespace.model('Country', {
     'id_country': fields.Integer(readonly=True, description='ID du pays'),
     'name': fields.String(required=True, description='Nom du pays'),
-    'iso_code': fields.Integer(readonly=True, description='Iso code du pays'),
+    'iso_code': fields.String(required=True, description='Iso code du pays'),  # Changement: iso_code devient un String
     'population': fields.Integer(required=True, description='Population du pays'),
     'pib': fields.Float(description='PIB du pays'),
-    'id_climat_type': fields.Integer(required=True, description='ID du type de climat'),
-    'id_continent': fields.Integer(required=True, description='ID du continent')
+    'latitude': fields.Float(description='Latitude du pays'),  # Nouveau champ: latitude
+    'longitude': fields.Float(description='Longitude du pays'),  # Nouveau champ: longitude
+    'id_continent': fields.Integer(required=True, description='ID du continent'),
+    'id_region': fields.Integer(description='ID de la région du pays')  # Nouveau champ: id_region
 })
 
 def clean_pib_value(pib_value):
@@ -119,19 +121,19 @@ def create_country():
     """
     data = request.json
 
-    climat_check_query = "SELECT 1 FROM climat_type WHERE id_climat_type = %s"
-    climat_exists, climat_error = execute_query(climat_check_query, (data['id_climat_type'],), fetch_one=True)
-    if climat_error:
-        return {"error": climat_error}, 500
-    if not climat_exists:
-        return {"error": "Invalid id_climat_type provided."}, 400
-
     query = """
-        INSERT INTO country (name, population, pib, id_climat_type, id_continent)
-        VALUES (%s, %s, %s, %s, %s) RETURNING id_country
+        INSERT INTO country (name, iso_code, population, pib, latitude, longitude, id_continent, id_region)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING id_country
     """
     new_id, error = execute_query(query, (
-        data['name'], data['population'], data.get('pib'), data['id_climat_type'], data['id_continent']
+        data['name'],
+        data['iso_code'],  # Passer iso_code comme String
+        data['population'],
+        data.get('pib'),
+        data.get('latitude'),  # Passer latitude
+        data.get('longitude'),  # Passer longitude
+        data['id_continent'],
+        data.get('id_region')  # Passer id_region si disponible
     ), fetch_one=True)
     if error:
         return {"error": error}, 500
@@ -147,25 +149,21 @@ def update_country(country_id):
     """
     data = request.json
 
-    climat_check_query = "SELECT 1 FROM climat_type WHERE id_climat_type = %s"
-    climat_exists, climat_error = execute_query(climat_check_query, (data['id_climat_type'],), fetch_one=True)
-    if climat_error:
-        return {"error": climat_error}, 500
-    if not climat_exists:
-        return {"error": "Invalid id_climat_type provided."}, 400
-
     query = """
         UPDATE country
-        SET name = %s, population = %s, pib = %s, id_climat_type = %s, id_continent = %s
+        SET name = %s, iso_code = %s, population = %s, pib = %s, latitude = %s, longitude = %s, id_continent = %s, id_region = %s
         WHERE id_country = %s
         RETURNING id_country
     """
     updated, error = execute_query(query, (
         data['name'],
+        data['iso_code'],
         data['population'],
         data.get('pib'),
-        data['id_climat_type'],
+        data.get('latitude'),
+        data.get('longitude'),
         data['id_continent'],
+        data.get('id_region'),
         country_id
     ), fetch_one=True)
     if error:

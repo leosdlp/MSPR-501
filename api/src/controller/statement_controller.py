@@ -17,16 +17,25 @@ statement_namespace = Namespace('statement', description='Gestion des statements
 
 statement_model = statement_namespace.model('Statement', {
     'id_statement': fields.Integer(readOnly=True, description='ID du statement'),
-    '_date': fields.String(required=True, description='Date du statement'),
+    '_date': fields.Date(required=True, description='Date du statement'),
     'confirmed': fields.Integer(required=True, description='Cas confirmés'),
     'deaths': fields.Integer(required=True, description='Nombre de décès'),
     'recovered': fields.Integer(required=True, description='Nombre de récupérés'),
     'active': fields.Integer(required=True, description='Nombre de cas actifs'),
     'total_tests': fields.Integer(description='Total des tests effectués'),
-    'new_deaths': fields.Integer(required=True, description='Nouveaux décès'),
-    'new_cases': fields.Integer(required=True, description='Nouveaux cas'),
-    'new_recovered': fields.Integer(required=True, description='Nouveaux récupérés'),
-    'id_disease': fields.Integer(required=True, description='ID de la maladie')
+    'id_disease': fields.Integer(required=True, description='ID de la maladie'),
+    'id_country': fields.Integer(required=True, description='ID de la maladie')
+})
+
+statement_post_model = statement_namespace.model('Statement', {
+    '_date': fields.Date(required=True, description='Date du statement'),
+    'confirmed': fields.Integer(required=True, description='Cas confirmés'),
+    'deaths': fields.Integer(required=True, description='Nombre de décès'),
+    'recovered': fields.Integer(required=True, description='Nombre de récupérés'),
+    'active': fields.Integer(required=True, description='Nombre de cas actifs'),
+    'total_tests': fields.Integer(description='Total des tests effectués'),
+    'id_disease': fields.Integer(required=True, description='ID de la maladie'),
+    'id_country': fields.Integer(required=True, description='ID de la maladie')
 })
 
 def fetch_statements():
@@ -57,7 +66,7 @@ def get_statements():
     statements = fetch_statements()
     if not statements:
         return jsonify({"error": "No statements found"}), 404
-    return jsonify(statements), 200
+    return statements, 200
 
 @statement_controller.route('/statement/<int:statement_id>', methods=['GET'])
 def get_statement(statement_id):
@@ -77,7 +86,7 @@ def get_statement(statement_id):
             statement = cursor.fetchone()
             if not statement:
                 return jsonify({"error": "Statement not found"}), 404
-            return jsonify(statement), 200
+            return statement, 200
     except Exception as e:
         print("Erreur lors de la récupération des données du statement :", e)
         return jsonify({"error": "An error occurred"}), 500
@@ -99,10 +108,8 @@ def create_statement():
             "deaths",
             "recovered",
             "active",
-            "new_deaths",
-            "new_cases",
-            "new_recovered",
-            "id_disease"
+            "id_disease",
+            "id_country"
         ]
         for field in required_fields:
             if field not in new_statement:
@@ -119,12 +126,10 @@ def create_statement():
                     recovered,
                     active,
                     total_tests,
-                    new_deaths,
-                    new_cases,
-                    new_recovered,
-                    id_disease
+                    id_disease,
+                    id_country
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id_statement
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING id_statement
                 """,
                 (
                     new_statement["_date"],
@@ -133,10 +138,8 @@ def create_statement():
                     new_statement["recovered"],
                     new_statement["active"],
                     new_statement.get("total_tests"),
-                    new_statement["new_deaths"],
-                    new_statement["new_cases"],
-                    new_statement["new_recovered"],
-                    new_statement["id_disease"]
+                    new_statement["id_disease"],
+                    new_statement["id_country"]
                 )
             )
             new_statement_id = cursor.fetchone()[0]
@@ -150,10 +153,8 @@ def create_statement():
             "recovered": new_statement["recovered"],
             "active": new_statement["active"],
             "total_tests": new_statement.get("total_tests"),
-            "new_deaths": new_statement["new_deaths"],
-            "new_cases": new_statement["new_cases"],
-            "new_recovered": new_statement["new_recovered"],
-            "id_disease": new_statement["id_disease"]
+            "id_disease": new_statement["id_disease"],
+            "id_disease": new_statement["id_country"]
         }), 201
 
     except Exception as e:
@@ -180,10 +181,8 @@ def update_statement(statement_id):
             "deaths",
             "recovered",
             "active",
-            "new_deaths",
-            "new_cases",
-            "new_recovered",
-            "id_disease"
+            "id_disease",
+            "id_country"
         ]
         for field in required_fields:
             if field not in updated_statement:
@@ -200,10 +199,8 @@ def update_statement(statement_id):
                     recovered = %s,
                     active = %s,
                     total_tests = %s,
-                    new_deaths = %s,
-                    new_cases = %s,
-                    new_recovered = %s,
-                    id_disease = %s
+                    id_disease = %s,
+                    id_country = %s
                 WHERE id_statement = %s
                 RETURNING
                     id_statement,
@@ -213,10 +210,8 @@ def update_statement(statement_id):
                     recovered,
                     active,
                     total_tests,
-                    new_deaths,
-                    new_cases,
-                    new_recovered,
-                    id_disease
+                    id_disease,
+                    id_country
                 """,
                 (
                     updated_statement["_date"],
@@ -225,10 +220,8 @@ def update_statement(statement_id):
                     updated_statement["recovered"],
                     updated_statement["active"],
                     updated_statement.get("total_tests"),
-                    updated_statement["new_deaths"],
-                    updated_statement["new_cases"],
-                    updated_statement["new_recovered"],
                     updated_statement["id_disease"],
+                    updated_statement["id_country"],
                     statement_id
                 )
             )
@@ -246,10 +239,8 @@ def update_statement(statement_id):
             "recovered": updated_statement_data[4],
             "active": updated_statement_data[5],
             "total_tests": updated_statement_data[6],
-            "new_deaths": updated_statement_data[7],
-            "new_cases": updated_statement_data[8],
-            "new_recovered": updated_statement_data[9],
-            "id_disease": updated_statement_data[10]
+            "id_disease": updated_statement_data[7],
+            "id_disease": updated_statement_data[8]
         }), 200
 
     except Exception as e:
@@ -303,8 +294,13 @@ class Statements(Resource):
         """
         return get_statements()[0]
 
+@statement_namespace.route('/statement')
+class StatementPost(Resource):
+    """
+    Ressource pour gérer la création de statement.
+    """
     @statement_namespace.doc(description="Crée un nouveau statement.")
-    @statement_namespace.expect(statement_model)
+    @statement_namespace.expect(statement_post_model)
     def post(self):
         """
         Crée un nouveau statement.
@@ -334,7 +330,7 @@ class Statement(Resource):
         return get_statement(statement_id)[0]
 
     @statement_namespace.doc(description="Met à jour un statement existant.")
-    @statement_namespace.expect(statement_model)
+    @statement_namespace.expect(statement_post_model)
     def put(self, statement_id):
         """
         Met à jour un statement existant.

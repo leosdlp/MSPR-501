@@ -1,7 +1,7 @@
 """
-Module Flask pour la gestion des types de climat.
-Ce module fournit une API REST permettant de récupérer, créer, mettre à jour et supprimer des types de climat
-associés à des pays.
+Module Flask pour la gestion de la relation pays-types de climat.
+Ce module fournit une API REST permettant de récupérer, créer, mettre à jour et supprimer 
+des relations entre les pays et leurs types de climat.
 
 Dépendances :
 - Flask
@@ -14,167 +14,147 @@ from flask_restx import Resource, fields, Namespace
 import psycopg2.extras
 from connect_db import DBConnection
 
-
+# Définition du Blueprint et du Namespace
 country_climat_type_controller = Blueprint('country_climat_type_controller', __name__)
+country_climat_type_namespace = Namespace('country_climat_type', description='Gestion des relations pays-types de climat')
 
-country_climat_type_namespace = Namespace('country_climat_type', description='Gestion des types de climat')
-
+# Modèle pour la documentation de l'API
 documentation_model = country_climat_type_namespace.model('CountryClimatType', {
-    'id_climat_type': fields.Integer(readonly=True, description='Identifiant unique du type de climat'),
-    'id_country': fields.Integer(readonly=True, description='Identifiant du pays associé'),
-    'name': fields.String(required=True, description='Nom du type de climat'),
-    'description': fields.String(description='Description du type de climat')
+    'id_climat_type': fields.Integer(required=True, description='Identifiant du type de climat'),
+    'id_country': fields.Integer(required=True, description='Identifiant du pays associé'),
 })
 
 @country_climat_type_controller.route('/country_climat_types', methods=['GET'])
-def get_all_climat_types():
-    """Récupère tous les types de climat disponibles dans la base de données."""
+def get_all_country_climat_types():
+    """Récupère toutes les relations pays-types de climat."""
     try:
         with DBConnection() as conn:
             cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
             cursor.execute("SELECT * FROM country_climat_type")
-            country_climat_types = cursor.fetchall()
-            return country_climat_types, 200
+            result = cursor.fetchall()
+            return result, 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@country_climat_type_controller.route('/country_climat_type/<int:climat_type_id>', methods=['GET'])
-def get_climat_type_by_id(climat_type_id):
-    """Récupère un type de climat spécifique par son identifiant."""
+@country_climat_type_controller.route('/country_climat_type/<int:id_climat_type>/<int:id_country>', methods=['GET'])
+def get_country_climat_type(id_climat_type, id_country):
+    """Récupère une relation spécifique entre un pays et un type de climat."""
     try:
         with DBConnection() as conn:
             cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-            cursor.execute("SELECT * FROM country_climat_type WHERE id_climat_type = %s", (climat_type_id,))
-            country_climat_type = cursor.fetchone()
-            if not country_climat_type:
-                return jsonify({"error": "Climat type not found"}), 404
-            return country_climat_type, 200
+            cursor.execute("SELECT * FROM country_climat_type WHERE id_climat_type = %s AND id_country = %s", (id_climat_type, id_country))
+            result = cursor.fetchone()
+
+            if not result:
+                return jsonify({"error": "Relation not found"}), 404
+
+            return result, 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 @country_climat_type_controller.route('/country_climat_type', methods=['POST'])
-def create_climat_type():
-    """Crée un nouveau type de climat et l'ajoute à la base de données."""
+def create_country_climat_type():
+    """Ajoute une nouvelle relation entre un pays et un type de climat."""
     try:
         data = request.json
-        if "name" not in data:
-            return jsonify({"error": "Missing 'name'"}), 400
+        if "id_climat_type" not in data or "id_country" not in data:
+            return jsonify({"error": "Missing 'id_climat_type' or 'id_country'"}), 400
 
         with DBConnection() as conn:
             cursor = conn.cursor()
             cursor.execute(
-                """
-                INSERT INTO country_climat_type (name, description)
-                VALUES (%s, %s) RETURNING id_climat_type
-                """,
-                (data["name"], data.get("description"))
+                "INSERT INTO country_climat_type (id_climat_type, id_country) VALUES (%s, %s) RETURNING id_climat_type, id_country",
+                (data["id_climat_type"], data["id_country"])
             )
-            new_id = cursor.fetchone()[0]
+            new_entry = cursor.fetchone()
             conn.commit()
 
         return jsonify({
-            "id_climat_type": new_id,
-            "name": data["name"],
-            "description": data.get("description")
+            "id_climat_type": new_entry[0],
+            "id_country": new_entry[1]
         }), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@country_climat_type_controller.route('/country_climat_type/<int:climat_type_id>', methods=['PUT'])
-def update_climat_type(climat_type_id):
-    """Met à jour les informations d'un type de climat existant."""
+@country_climat_type_controller.route('/country_climat_type/<int:id_climat_type>/<int:id_country>', methods=['PUT'])
+def update_country_climat_type(id_climat_type, id_country):
+    """Met à jour une relation entre un pays et un type de climat."""
     try:
         data = request.json
-        if "name" not in data:
-            return jsonify({"error": "Missing 'name'"}), 400
+        if "new_id_climat_type" not in data or "new_id_country" not in data:
+            return jsonify({"error": "Missing 'new_id_climat_type' or 'new_id_country'"}), 400
 
         with DBConnection() as conn:
             cursor = conn.cursor()
             cursor.execute(
                 """
                 UPDATE country_climat_type
-                SET name = %s, description = %s
-                WHERE id_climat_type = %s
-                RETURNING id_climat_type
+                SET id_climat_type = %s, id_country = %s
+                WHERE id_climat_type = %s AND id_country = %s
+                RETURNING id_climat_type, id_country
                 """,
-                (data["name"], data.get("description"), climat_type_id)
+                (data["new_id_climat_type"], data["new_id_country"], id_climat_type, id_country)
             )
             updated = cursor.fetchone()
             conn.commit()
 
             if not updated:
-                return jsonify({"error": "Climat type not found"}), 404
-            return jsonify({"message": "Climat type updated successfully"}), 200
+                return jsonify({"error": "Relation not found"}), 404
+
+            return jsonify({"message": "Relation updated successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@country_climat_type_controller.route('/country_climat_type/<int:climat_type_id>', methods=['DELETE'])
-def delete_climat_type(climat_type_id):
-    """Supprime un type de climat de la base de données."""
+@country_climat_type_controller.route('/country_climat_type/<int:id_climat_type>/<int:id_country>', methods=['DELETE'])
+def delete_country_climat_type(id_climat_type, id_country):
+    """Supprime une relation entre un pays et un type de climat."""
     try:
         with DBConnection() as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "DELETE FROM country_climat_type WHERE id_climat_type = %s RETURNING id_climat_type",
-                (climat_type_id,)
+                "DELETE FROM country_climat_type WHERE id_climat_type = %s AND id_country = %s RETURNING id_climat_type, id_country",
+                (id_climat_type, id_country)
             )
             deleted = cursor.fetchone()
             conn.commit()
 
             if not deleted:
-                return jsonify({"error": "Climat type not found"}), 404
-            return jsonify({"message": "Climat type deleted successfully"}), 200
+                return jsonify({"error": "Relation not found"}), 404
+
+            return jsonify({"message": "Relation deleted successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# Ajout des routes avec Flask-RESTx
 @country_climat_type_namespace.route('/country_climat_types')
-class ClimatTypes(Resource):
-    """Ressource permettant de gérer la récupération de tous les types de climat."""
-    @country_climat_type_namespace.doc(description="Récupère tous les types de climat.")
+class CountryClimatTypesResource(Resource):
+    """Ressource pour récupérer toutes les relations pays-types de climat."""
+    @country_climat_type_namespace.doc(description="Récupère toutes les relations pays-types de climat.")
     @country_climat_type_namespace.marshal_list_with(documentation_model)
     def get(self):
-        """
-        Récupère la liste de tous les types de climat.
+        return get_all_country_climat_types()[0]
 
-        :return: Une liste des types de climat en JSON avec un code de statut 200 si réussi,
-                 ou une erreur avec un code de statut approprié en cas d'échec.
-        """
-        return get_all_climat_types()[0]
-
-@country_climat_type_namespace.route('/country_climat_type/<int:climat_type_id>')
-class ClimatTypeById(Resource):
-    """Ressource permettant de gérer un type de climat spécifique par ID."""
-    @country_climat_type_namespace.doc(description="Récupère un type de climat par ID.")
-    @country_climat_type_namespace.marshal_with(documentation_model)
-    def get(self, climat_type_id):
-        """
-        Récupère un type de climat spécifique à partir de son ID.
-
-        :param climat_type_id: L'ID du type de climat à récupérer.
-        :return: Les détails du type de climat en JSON avec un code de statut 200 si trouvé,
-                 ou une erreur avec un code de statut 404 si non trouvé.
-        """
-        return get_climat_type_by_id(climat_type_id)[0]
-
-    @country_climat_type_namespace.doc(description="Met à jour un type de climat.")
+@country_climat_type_namespace.route('/country_climat_type')
+class CountryClimatTypesResource(Resource):
+    """Ressource pour récupérer toutes les relations pays-types de climat."""
+    @country_climat_type_namespace.doc(description="Ajoute une nouvelle relation pays-type de climat.")
     @country_climat_type_namespace.expect(documentation_model)
-    def put(self, climat_type_id):
-        """
-        Met à jour un type de climat spécifique à partir de son ID.
+    def post(self):
+        return create_country_climat_type()[0]
 
-        :param climat_type_id: L'ID du type de climat à mettre à jour.
-        :return: Les détails du type de climat mis à jour en JSON avec un code de statut 200 si réussi,
-                 ou une erreur avec un code de statut 404 si le type de climat n'existe pas.
-        """
-        return update_climat_type(climat_type_id)[0]
+@country_climat_type_namespace.route('/country_climat_type/<int:id_climat_type>/<int:id_country>')
+class CountryClimatTypeResource(Resource):
+    """Ressource pour gérer une relation pays-type de climat spécifique."""
+    @country_climat_type_namespace.doc(description="Récupère une relation pays-type de climat spécifique.")
+    @country_climat_type_namespace.marshal_with(documentation_model)
+    def get(self, id_climat_type, id_country):
+        return get_country_climat_type(id_climat_type, id_country)[0]
 
-    @country_climat_type_namespace.doc(description="Supprime un type de climat.")
-    def delete(self, climat_type_id):
-        """
-        Supprime un type de climat spécifique à partir de son ID.
+    @country_climat_type_namespace.doc(description="Met à jour une relation pays-type de climat.")
+    @country_climat_type_namespace.expect(documentation_model)
+    def put(self, id_climat_type, id_country):
+        return update_country_climat_type(id_climat_type, id_country)[0]
 
-        :param climat_type_id: L'ID du type de climat à supprimer.
-        :return: Un message de confirmation en JSON avec un code de statut 200 si réussi,
-                 ou une erreur avec un code de statut 404 si le type de climat n'existe pas.
-        """
-        return delete_climat_type(climat_type_id)[0]
+    @country_climat_type_namespace.doc(description="Supprime une relation pays-type de climat.")
+    def delete(self, id_climat_type, id_country):
+        return delete_country_climat_type(id_climat_type, id_country)[0]

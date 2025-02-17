@@ -134,13 +134,13 @@ def create_disease():
     try:
         with DBConnection() as conn:
             cursor = conn.cursor()
-            cursor.execute("""
+            cursor.execute(
+                """
                 INSERT INTO disease (name, is_pandemic)
                 VALUES (%s, %s) RETURNING id_disease
-            """, (
-                data['name'],
-                data['is_pandemic']
-            ))
+                """,
+                (data['name'], data['is_pandemic'])
+            )
             new_id = cursor.fetchone()[0]
             conn.commit()
             return {"id_disease": new_id}, 201

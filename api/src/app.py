@@ -78,16 +78,3 @@ for blueprint in blueprints:
 if __name__ == '__main__':
     # Démarre l'application Flask en mode débogage.
     app.run(host='0.0.0.0', port=5000, debug=True)
-
-# Fini :
-    # - app.py
-    # - connect_db.py
-    # - climat_type_controller.py
-    # - continent_controller.py
-    # - region_controller.py
-
-# Pas fini :
-    # - country_climat_type_controller.py
-    # - country_controller.py
-    # - disease_controller.py
-    # - statement_controller.py

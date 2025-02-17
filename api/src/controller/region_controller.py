@@ -46,6 +46,7 @@ Exemple de réponse pour POST /region :
 from flask import Blueprint, jsonify, request
 from flask_restx import Namespace, Resource, fields
 import psycopg2.extras
+from flask_restx import reqparse
 from connect_db import DBConnection
 
 
@@ -58,9 +59,8 @@ region_model = region_namespace.model('Region', {
     'name': fields.String(required=True, description='Nom de la région')
 })
 
-region_post_model = region_namespace.model('RegionPost', {
-    'name': fields.String(required=True, description='Nom de la région')
-})
+region_parser = reqparse.RequestParser()
+region_parser.add_argument("name", type=str, required=True, help="Nom de la région", location="json")
 
 def fetch_regions():
     """
@@ -261,7 +261,7 @@ class RegionPost(Resource):
     Classe pour la création d'une nouvelle région.
     """
     @region_namespace.doc(description="Crée une nouvelle région.")
-    @region_namespace.expect(region_post_model)
+    @region_namespace.expect(region_parser)
     def post(self):
         """
         Crée une nouvelle région.
@@ -289,7 +289,7 @@ class Region(Resource):
         return get_region(region_id)[0]
 
     @region_namespace.doc(description="Met à jour une région existante.")
-    @region_namespace.expect(region_post_model)
+    @region_namespace.expect(region_parser)
     def put(self, region_id):
         """
         Met à jour les informations d'une région existante.

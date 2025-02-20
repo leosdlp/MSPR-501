@@ -61,3 +61,9 @@ CREATE TABLE statement(
    FOREIGN KEY(id_disease) REFERENCES disease(id_disease),
    FOREIGN KEY(id_country) REFERENCES country(id_country)
 );
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL
+);

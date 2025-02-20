@@ -7,6 +7,7 @@ dans la base de données à travers des routes API.
 
 from flask import Blueprint, jsonify, request
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required
 import psycopg2.extras
 from connect_db import DBConnection
 
@@ -24,51 +25,40 @@ statement_model = statement_namespace.model('Statement', {
     'active': fields.Integer(required=True, description='Nombre de cas actifs'),
     'total_tests': fields.Integer(description='Total des tests effectués'),
     'id_disease': fields.Integer(required=True, description='ID de la maladie'),
-    'id_country': fields.Integer(required=True, description='ID de la maladie')
+    'id_country': fields.Integer(required=True, description='ID du pays')
 })
 
-statement_post_model = statement_namespace.model('Statement', {
-    '_date': fields.Date(required=True, description='Date du statement'),
-    'confirmed': fields.Integer(required=True, description='Cas confirmés'),
-    'deaths': fields.Integer(required=True, description='Nombre de décès'),
-    'recovered': fields.Integer(required=True, description='Nombre de récupérés'),
-    'active': fields.Integer(required=True, description='Nombre de cas actifs'),
-    'total_tests': fields.Integer(description='Total des tests effectués'),
-    'id_disease': fields.Integer(required=True, description='ID de la maladie'),
-    'id_country': fields.Integer(required=True, description='ID de la maladie')
-})
+pagination_parser = statement_namespace.parser()
+pagination_parser.add_argument('page', type=int, required=False, default=1, help='Numéro de la page')
+pagination_parser.add_argument('per_page', type=int, required=False, default=100, help="Nombre d'éléments par page")
 
-def fetch_statements():
-    """
-    Récupère tous les statements depuis la base de données.
-
-    Returns:
-        list: Liste des statements récupérés, sous forme de dictionnaires.
-    """
+def fetch_statements(page=1, per_page=100):
     try:
+        offset = (page - 1) * per_page
         with DBConnection() as conn:
             cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-            cursor.execute("SELECT * FROM statement")
-            statements = cursor.fetchall()
-            return statements
+            cursor.execute("""
+                SELECT * FROM statement
+                ORDER BY id_statement
+                LIMIT %s OFFSET %s
+            """, (per_page, offset))
+            return cursor.fetchall()
     except Exception as e:
         print("Erreur lors de la récupération des données des statements :", e)
         return []
 
 @statement_controller.route('/statements', methods=['GET'])
+@jwt_required()
 def get_statements():
-    """
-    Route pour récupérer tous les statements.
-
-    Returns:
-        Response: Liste des statements en format JSON ou message d'erreur.
-    """
-    statements = fetch_statements()
+    page = request.args.get('page', default=1, type=int)
+    per_page = request.args.get('per_page', default=100, type=int)
+    statements = fetch_statements(page, per_page)
     if not statements:
         return jsonify({"error": "No statements found"}), 404
-    return statements, 200
+    return jsonify(statements), 200
 
 @statement_controller.route('/statement/<int:statement_id>', methods=['GET'])
+@jwt_required()
 def get_statement(statement_id):
     """
     Route pour récupérer un statement spécifique par son ID.
@@ -92,6 +82,7 @@ def get_statement(statement_id):
         return jsonify({"error": "An error occurred"}), 500
 
 @statement_controller.route('/statement', methods=['POST'])
+@jwt_required()
 def create_statement():
     """
     Route pour créer un nouveau statement.
@@ -162,6 +153,7 @@ def create_statement():
         return jsonify({"error": "An error occurred"}), 500
 
 @statement_controller.route('/statement/<int:statement_id>', methods=['PUT'])
+@jwt_required()
 def update_statement(statement_id):
     """
     Route pour mettre à jour un statement existant.
@@ -248,6 +240,7 @@ def update_statement(statement_id):
         return jsonify({"error": "An error occurred"}), 500
 
 @statement_controller.route('/statement/<int:statement_id>', methods=['DELETE'])
+@jwt_required()
 def delete_statement(statement_id):
     """
     Route pour supprimer un statement spécifique par son ID.
@@ -280,27 +273,24 @@ def delete_statement(statement_id):
 
 @statement_namespace.route('/statements')
 class Statements(Resource):
-    """
-    Ressource pour gérer l'accès à tous les statements.
-    """
-    @statement_namespace.doc(description="Récupère tous les statements.")
+    @jwt_required()
+    @statement_namespace.doc(security='Bearer', description="Récupère tous les statements avec pagination.")
+    @statement_namespace.expect(pagination_parser)
     @statement_namespace.marshal_list_with(statement_model)
     def get(self):
-        """
-        Récupère tous les statements.
-
-        Returns:
-            Response: Liste des statements en format JSON.
-        """
-        return get_statements()[0]
+        args = pagination_parser.parse_args()
+        page = args.get('page')
+        per_page = args.get('per_page')
+        return fetch_statements(page, per_page)
 
 @statement_namespace.route('/statement')
 class StatementPost(Resource):
     """
     Ressource pour gérer la création de statement.
     """
-    @statement_namespace.doc(description="Crée un nouveau statement.")
-    @statement_namespace.expect(statement_post_model)
+    @jwt_required()
+    @statement_namespace.doc(security='Bearer', description="Crée un nouveau statement.")
+    @statement_namespace.expect(statement_model)
     def post(self):
         """
         Crée un nouveau statement.
@@ -315,7 +305,8 @@ class Statement(Resource):
     """
     Ressource pour gérer l'accès à un statement spécifique par son ID.
     """
-    @statement_namespace.doc(description="Récupère un statement spécifique par ID.")
+    @jwt_required()
+    @statement_namespace.doc(security='Bearer', description="Récupère un statement spécifique par ID.")
     @statement_namespace.marshal_with(statement_model)
     def get(self, statement_id):
         """
@@ -329,8 +320,9 @@ class Statement(Resource):
         """
         return get_statement(statement_id)[0]
 
-    @statement_namespace.doc(description="Met à jour un statement existant.")
-    @statement_namespace.expect(statement_post_model)
+    @jwt_required()
+    @statement_namespace.doc(security='Bearer', description="Met à jour un statement existant.")
+    @statement_namespace.expect(statement_model)
     def put(self, statement_id):
         """
         Met à jour un statement existant.
@@ -343,7 +335,8 @@ class Statement(Resource):
         """
         return update_statement(statement_id)[0]
 
-    @statement_namespace.doc(description="Supprime un statement.")
+    @jwt_required()
+    @statement_namespace.doc(security='Bearer', description="Supprime un statement.")
     def delete(self, statement_id):
         """
         Supprime un statement spécifique.

@@ -1,30 +1,51 @@
-"""
-Application Flask pour gérer les données sanitaires et météorologiques.
-
-Cette application fournit des points d'API pour la gestion des données sanitaires (comme les maladies) 
-et des données météorologiques (comme le climat et les régions). Elle se connecte à une base de données 
-et expose plusieurs routes via l'API Flask-RESTX.
-
-Fonctionnalités principales :
-- Connexion à la base de données.
-- Documentation de l'API via Swagger.
-- Points de terminaison pour les entités sanitaires et météorologiques.
-"""
-
 import sys
-from flask import Flask         # type: ignore
-from flask_restx import Api     # type: ignore
+import bcrypt
+from flask import Flask, request, jsonify
+from flask_restx import Api
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 from controller import climat_type_controller, continent_controller, country_climat_type_controller
 from controller import country_controller, disease_controller, region_controller, statement_controller
-from connect_db import get_db_connection, DBConnection
+from controller import login_controller
+from connect_db import get_db_connection
 
+
+def hash_password(password: str) -> str:
+    """Hache un mot de passe en utilisant bcrypt."""
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed_password.decode('utf-8')
+
+password_to_hash = "password"
+hashed_password = hash_password(password_to_hash)
+
+print(f"Mot de passe haché : {hashed_password}")
 
 app = Flask(__name__)
+
+app.config['JWT_SECRET_KEY'] = 'votre_clé_secrète_super_sécurisée'
+jwt = JWTManager(app)
+
+@app.route('/')
+def home():
+    return {"message": "L'API fonctionne correctement"}, 200
+
+authorizations = {
+    'Bearer': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'Authorization',
+        'description': "Ajouter 'Bearer <votre_token>' dans l'en-tête de la requête"
+    }
+}
 
 api = Api(app,
           title="MSPR 501 API",
           version="1.0",
-          description="Documentation de l'API pour la gestion des données sanitaires et météorologiques.")
+          description="Documentation de l'API pour la gestion des données sanitaires et météorologiques.",
+          doc="/api/docs",
+          authorizations=authorizations,
+            security='Bearer'
+          )
 
 api.add_namespace(climat_type_controller.climat_type_namespace, path='/swagger')
 api.add_namespace(continent_controller.continent_namespace, path='/swagger')
@@ -33,30 +54,21 @@ api.add_namespace(country_climat_type_controller.country_climat_type_namespace, 
 api.add_namespace(disease_controller.disease_namespace, path='/swagger')
 api.add_namespace(region_controller.region_namespace, path='/swagger')
 api.add_namespace(statement_controller.statement_namespace, path='/swagger')
+api.add_namespace(login_controller.auth_namespace, path='/swagger')
 
 db_connection = get_db_connection()
-
 if not db_connection:
-    # Cette condition vérifie si une connexion à la base de données a réussi avant de démarrer l'application.
-    # Si la connexion échoue, l'application s'arrête avec un message d'erreur.
-    print("Impossible de démarrer l'application sans une connexion à la base de données.")
+    print("Impossible de se connecter à la base de données.")
     sys.exit(1)
 
-@app.route('/status')
-def example_route():
+@app.route('/protected', methods=['GET'])
+@jwt_required()
+def protected():
     """
-    Route de test pour vérifier l'état de la connexion à la base de données.
-
-    Utilise le gestionnaire de connexion DBConnection pour vérifier si la connexion à la base de
-    données est active.
-
-    Returns:
-        dict: Un message JSON avec l'état de la connexion à la base de données.
+    Route protégée nécessitant un token JWT valide.
     """
-    with DBConnection() as conn:
-        if not conn:
-            return {"error": "Database connection failed"}, 500
-        return {"message": "Connexion réussie à la base de données"}, 200
+    current_user = get_jwt_identity()
+    return jsonify(message=f"Bienvenue, {current_user} !"), 200
 
 blueprints = [
     climat_type_controller.climat_type_controller,
@@ -69,12 +81,7 @@ blueprints = [
 ]
 
 for blueprint in blueprints:
-    # Enregistre les blueprints pour chaque controller de l'API.
-    # Les blueprints permettent d'organiser les routes de l'API par fonctionnalité.
-    # Parameters:
-    #     blueprint (Blueprint): Un blueprint de l'API pour un module spécifique.
     app.register_blueprint(blueprint, url_prefix='/api')
 
 if __name__ == '__main__':
-    # Démarre l'application Flask en mode débogage.
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(debug=True)

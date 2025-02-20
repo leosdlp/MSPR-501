@@ -24,6 +24,7 @@ Modules utilisés :
 
 from flask import Blueprint, request
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required
 import psycopg2.extras
 from connect_db import DBConnection
 
@@ -54,6 +55,7 @@ def fetch_continents():
         return []
 
 @continent_controller.route('/continents', methods=['GET'])
+@jwt_required()
 def get_continents():
     """
     Récupère tous les continents.
@@ -66,6 +68,7 @@ def get_continents():
     return continents, 200
 
 @continent_controller.route('/continent/<int:continent_id>', methods=['GET'])
+@jwt_required()
 def get_continent_by_id(continent_id):
     """
     Récupère un continent spécifique par son ID.
@@ -86,6 +89,7 @@ def get_continent_by_id(continent_id):
         return {"error": "An error occurred"}, 500
 
 @continent_controller.route('/continent/name/<string:continent_name>', methods=['GET'])
+@jwt_required()
 def get_continent_by_name(continent_name):
     """
     Récupère un continent spécifique par son nom.
@@ -106,6 +110,7 @@ def get_continent_by_name(continent_name):
         return {"error": "An error occurred"}, 500
 
 @continent_controller.route('/continent', methods=['POST'])
+@jwt_required()
 def create_continent():
     """
     Crée un nouveau continent dans la base de données.
@@ -136,6 +141,7 @@ def create_continent():
         return {"error": "An error occurred"}, 500
 
 @continent_controller.route('/continent/<int:continent_id>', methods=['PUT'])
+@jwt_required()
 def update_continent(continent_id):
     """
     Met à jour un continent spécifique par son ID.
@@ -175,6 +181,7 @@ def update_continent(continent_id):
         return {"error": "An error occurred"}, 500
 
 @continent_controller.route('/continent/<int:continent_id>', methods=['DELETE'])
+@jwt_required()
 def delete_continent(continent_id):
     """
     Supprime un continent spécifique par son ID.
@@ -207,7 +214,8 @@ class Continents(Resource):
     """
     Classe API pour récupérer tous les continents.
     """
-    @continent_namespace.doc(description="Récupère tous les continents.")
+    @jwt_required()
+    @continent_namespace.doc(security='Bearer', description="Récupère tous les continents.")
     @continent_namespace.marshal_list_with(continent_model)
     def get(self):
         """
@@ -226,7 +234,8 @@ class ContinentPost(Resource):
     """
     Classe API pour créer un nouveau continent.
     """
-    @continent_namespace.doc(description="Crée un nouveau continent.")
+    @jwt_required()
+    @continent_namespace.doc(security='Bearer', description="Crée un nouveau continent.")
     @continent_namespace.expect(continent_model)
     def post(self):
         """
@@ -245,7 +254,8 @@ class ContinentById(Resource):
     """
     Classe API pour récupérer, mettre à jour et supprimer un continent par son ID.
     """
-    @continent_namespace.doc(description="Récupère un continent par ID.")
+    @jwt_required()
+    @continent_namespace.doc(security='Bearer', description="Récupère un continent par ID.")
     @continent_namespace.marshal_with(continent_model)
     def get(self, continent_id):
         """
@@ -260,7 +270,8 @@ class ContinentById(Resource):
             continent_namespace.abort(status_code, response.get("error", "Erreur inconnue"))
         return response, status_code
 
-    @continent_namespace.doc(description="Met à jour un continent existant.")
+    @jwt_required()
+    @continent_namespace.doc(security='Bearer', description="Met à jour un continent existant.")
     @continent_namespace.expect(continent_model)
     def put(self, continent_id):
         """
@@ -275,7 +286,8 @@ class ContinentById(Resource):
             continent_namespace.abort(status_code, response.get("error", "Erreur inconnue"))
         return response, status_code
 
-    @continent_namespace.doc(description="Supprime un continent par ID.")
+    @jwt_required()
+    @continent_namespace.doc(security='Bearer', description="Supprime un continent par ID.")
     def delete(self, continent_id):
         """
         Supprime un continent spécifique à partir de son ID.
@@ -294,7 +306,8 @@ class ContinentByName(Resource):
     """
     Classe API pour récupérer un continent par son nom.
     """
-    @continent_namespace.doc(description="Récupère un continent par nom.")
+    @jwt_required()
+    @continent_namespace.doc(security='Bearer', description="Récupère un continent par nom.")
     @continent_namespace.marshal_with(continent_model)
     def get(self, continent_name):
         """

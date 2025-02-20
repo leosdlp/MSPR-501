@@ -7,6 +7,7 @@ dans une base de données PostgreSQL.
 
 from flask import Blueprint, request
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required
 import psycopg2.extras
 from connect_db import DBConnection
 
@@ -64,6 +65,7 @@ def execute_query(query, params=None, fetch_one=False, fetch_all=False):
         return None, str(e)
 
 @country_controller.route('/countries', methods=['GET'])
+@jwt_required()
 def get_all_countries():
     """
     Récupère la liste de tous les pays enregistrés dans la base de données.
@@ -79,6 +81,7 @@ def get_all_countries():
     return countries, 200
 
 @country_controller.route('/country/<int:country_id>', methods=['GET'])
+@jwt_required()
 def get_country_by_id(country_id):
     """
     Récupère un pays par son identifiant unique.
@@ -96,6 +99,7 @@ def get_country_by_id(country_id):
     return {"error": f"Country with ID {country_id} not found"}, 404
 
 @country_controller.route('/country/name/<string:country_name>', methods=['GET'])
+@jwt_required()
 def get_country_by_name(country_name):
     """
     Récupère un pays par son nom.
@@ -113,6 +117,7 @@ def get_country_by_name(country_name):
     return {"error": f"Country with name {country_name} not found"}, 404
 
 @country_controller.route('/country', methods=['POST'])
+@jwt_required()
 def create_country():
     """
     Crée un nouveau pays dans la base de données.
@@ -140,6 +145,7 @@ def create_country():
     return {"id_country": new_id['id_country']}, 201
 
 @country_controller.route('/country/<int:country_id>', methods=['PUT'])
+@jwt_required()
 def update_country(country_id):
     """
     Met à jour les informations d'un pays existant.
@@ -173,6 +179,7 @@ def update_country(country_id):
     return {"error": "Country not found"}, 404
 
 @country_controller.route('/country/<int:country_id>', methods=['DELETE'])
+@jwt_required()
 def delete_country(country_id):
     """
     Supprime un pays de la base de données.
@@ -194,7 +201,8 @@ class Countries(Resource):
     Gestion des opérations liées aux pays.
     Cette classe permet de récupérer la liste de tous les pays.
     """
-    @country_namespace.doc(description="Récupère tous les pays.")
+    @jwt_required()
+    @country_namespace.doc(security='Bearer', description="Récupère tous les pays.")
     @country_namespace.marshal_list_with(country_model)
     def get(self):
         """
@@ -214,7 +222,8 @@ class CountryPost(Resource):
     Création d'un nouveau pays.
     Cette classe gère la création d'un pays avec les informations requises.
     """
-    @country_namespace.doc(description="Crée un nouveau pays.")
+    @jwt_required()
+    @country_namespace.doc(security='Bearer', description="Crée un nouveau pays.")
     @country_namespace.expect(country_model)
     def post(self):
         """
@@ -234,7 +243,8 @@ class CountryById(Resource):
     Gestion d'un pays par son identifiant.
     Cette classe permet de récupérer, mettre à jour et supprimer un pays spécifique.
     """
-    @country_namespace.doc(description="Récupère un pays par ID.")
+    @jwt_required()
+    @country_namespace.doc(security='Bearer', description="Récupère un pays par ID.")
     @country_namespace.marshal_with(country_model)
     def get(self, country_id):
         """
@@ -249,7 +259,8 @@ class CountryById(Resource):
             return {"error": response.get("error", "Erreur inconnue")}, status_code
         return response, status_code
 
-    @country_namespace.doc(description="Met à jour un pays existant.")
+    @jwt_required()
+    @country_namespace.doc(security='Bearer', description="Met à jour un pays existant.")
     @country_namespace.expect(country_model)
     def put(self, country_id):
         """
@@ -264,7 +275,8 @@ class CountryById(Resource):
             return {"error": response.get("error", "Erreur inconnue")}, status_code
         return response, status_code
 
-    @country_namespace.doc(description="Supprime un pays par ID.")
+    @jwt_required()
+    @country_namespace.doc(security='Bearer', description="Supprime un pays par ID.")
     def delete(self, country_id):
         """
         Supprime un pays spécifique à partir de son ID.
@@ -284,7 +296,8 @@ class CountryByName(Resource):
     Récupération d'un pays par son nom.
     Cette classe permet de récupérer un pays en utilisant son nom comme critère de recherche.
     """
-    @country_namespace.doc(description="Récupère un pays par nom.")
+    @jwt_required()
+    @country_namespace.doc(security='Bearer', description="Récupère un pays par nom.")
     @country_namespace.marshal_with(country_model)
     def get(self, country_name):
         """

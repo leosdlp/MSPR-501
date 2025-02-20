@@ -44,6 +44,7 @@ Exemple de réponse pour POST /region :
 """
 
 from flask import Blueprint, jsonify, request
+from flask_jwt_extended import jwt_required
 from flask_restx import Namespace, Resource, fields
 import psycopg2.extras
 from flask_restx import reqparse
@@ -81,6 +82,7 @@ def fetch_regions():
         return []
 
 @region_controller.route('/regions', methods=['GET'])
+@jwt_required()
 def get_regions():
     """
     Récupère toutes les régions.
@@ -94,6 +96,7 @@ def get_regions():
     return regions, 200
 
 @region_controller.route('/region/<int:region_id>', methods=['GET'])
+@jwt_required()
 def get_region(region_id):
     """
     Récupère une région spécifique par son ID.
@@ -115,6 +118,7 @@ def get_region(region_id):
         return jsonify({"error": "An error occurred"}), 500
 
 @region_controller.route('/region/name/<string:region_name>', methods=['GET'])
+@jwt_required()
 def get_region_by_name(region_name):
     """
     Récupère une région spécifique par son nom.
@@ -136,6 +140,7 @@ def get_region_by_name(region_name):
         return jsonify({"error": "An error occurred"}), 500
 
 @region_controller.route('/region', methods=['POST'])
+@jwt_required()
 def create_region():
     """
     Crée une nouvelle région.
@@ -171,6 +176,7 @@ def create_region():
         return jsonify({"error": "An error occurred"}), 500
 
 @region_controller.route('/region/<int:region_id>', methods=['PUT'])
+@jwt_required()
 def update_region(region_id):
     """
     Met à jour les informations d'une région existante.
@@ -215,6 +221,7 @@ def update_region(region_id):
         return jsonify({"error": "An error occurred"}), 500
 
 @region_controller.route('/region/<int:region_id>', methods=['DELETE'])
+@jwt_required()
 def delete_region(region_id):
     """
     Supprime une région existante.
@@ -242,85 +249,46 @@ def delete_region(region_id):
 
 @region_namespace.route('/regions')
 class Regions(Resource):
-    """
-    Classe pour la gestion des régions, avec les méthodes GET et POST.
-    """
-    @region_namespace.doc(description="Récupère toutes les régions.")
+    @jwt_required()
+    @region_namespace.doc(security='Bearer', description="Récupère toutes les régions.")
     @region_namespace.marshal_list_with(region_model)
     def get(self):
-        """
-        Récupère toutes les régions.
-
-        :return: Liste des régions
-        """
         return get_regions()[0]
 
 @region_namespace.route('/region')
 class RegionPost(Resource):
-    """
-    Classe pour la création d'une nouvelle région.
-    """
-    @region_namespace.doc(description="Crée une nouvelle région.")
+    @jwt_required()
+    @region_namespace.doc(security='Bearer', description="Crée une nouvelle région.")
     @region_namespace.expect(region_parser)
     def post(self):
-        """
-        Crée une nouvelle région.
-        """
         response, status_code = create_region()
         if status_code != 201:
             region_namespace.abort(status_code, response.get("error", "Erreur inconnue"))
         return response, status_code
 
-
 @region_namespace.route('/region/<int:region_id>')
 class Region(Resource):
-    """
-    Classe pour la gestion d'une région spécifique (GET, PUT, DELETE).
-    """
-    @region_namespace.doc(description="Récupère une région spécifique par ID.")
+    @jwt_required()
+    @region_namespace.doc(security='Bearer', description="Récupère une région spécifique par ID.")
     @region_namespace.marshal_with(region_model)
     def get(self, region_id):
-        """
-        Récupère les détails d'une région par son ID.
-
-        :param region_id: ID de la région à récupérer
-        :return: Détails de la région
-        """
         return get_region(region_id)[0]
 
-    @region_namespace.doc(description="Met à jour une région existante.")
+    @jwt_required()
+    @region_namespace.doc(security='Bearer', description="Met à jour une région existante.")
     @region_namespace.expect(region_parser)
     def put(self, region_id):
-        """
-        Met à jour les informations d'une région existante.
-
-        :param region_id: ID de la région à mettre à jour
-        :return: Détails de la région mise à jour
-        """
         return update_region(region_id)[0]
 
-    @region_namespace.doc(description="Supprime une région.")
+    @jwt_required()
+    @region_namespace.doc(security='Bearer', description="Supprime une région.")
     def delete(self, region_id):
-        """
-        Supprime une région spécifique.
-
-        :param region_id: ID de la région à supprimer
-        :return: Message de confirmation de la suppression
-        """
         return delete_region(region_id)[0]
 
 @region_namespace.route('/region/name/<string:region_name>')
 class RegionByName(Resource):
-    """
-    Classe pour récupérer une région par son nom.
-    """
-    @region_namespace.doc(description="Récupère une région par nom.")
+    @jwt_required()
+    @region_namespace.doc(security='Bearer', description="Récupère une région par nom.")
     @region_namespace.marshal_with(region_model)
     def get(self, region_name):
-        """
-        Récupère une région par son nom.
-
-        :param region_name: Nom de la région à récupérer
-        :return: Détails de la région
-        """
         return get_region_by_name(region_name)[0]

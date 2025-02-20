@@ -37,6 +37,7 @@ Exemple d'utilisation de chaque méthode :
 
 from flask import Blueprint, request
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required
 import psycopg2.extras
 from connect_db import DBConnection
 
@@ -52,6 +53,7 @@ disease_model = disease_namespace.model('Disease', {
 })
 
 @disease_controller.route('/diseases', methods=['GET'])
+@jwt_required()
 def get_all_diseases():
     """
     Récupère toutes les maladies présentes dans la base de données.
@@ -72,6 +74,7 @@ def get_all_diseases():
         return {"error": str(e)}, 500
 
 @disease_controller.route('/disease/<int:disease_id>', methods=['GET'])
+@jwt_required()
 def get_disease_by_id(disease_id):
     """
     Récupère une maladie spécifique par son ID.
@@ -97,6 +100,7 @@ def get_disease_by_id(disease_id):
         return {"error": f"An error occurred: {str(e)}"}, 500
 
 @disease_controller.route('/disease/name/<string:disease_name>', methods=['GET'])
+@jwt_required()
 def get_disease_by_name(disease_name):
     """
     Récupère une maladie par son nom.
@@ -122,6 +126,7 @@ def get_disease_by_name(disease_name):
         return {"error": f"An error occurred: {str(e)}"}, 500
 
 @disease_controller.route('/disease', methods=['POST'])
+@jwt_required()
 def create_disease():
     """
     Crée une nouvelle maladie dans la base de données.
@@ -149,6 +154,7 @@ def create_disease():
         return {"error": str(e)}, 500
 
 @disease_controller.route('/disease/<int:disease_id>', methods=['PUT'])
+@jwt_required()
 def update_disease(disease_id):
     """
     Met à jour les informations d'une maladie existante.
@@ -186,6 +192,7 @@ def update_disease(disease_id):
         return {"error": str(e)}, 500
 
 @disease_controller.route('/disease/<int:disease_id>', methods=['DELETE'])
+@jwt_required()
 def delete_disease(disease_id):
     """
     Supprime une maladie par son ID.
@@ -217,7 +224,8 @@ class Diseases(Resource):
     """
     Classe pour récupérer toutes les maladies.
     """
-    @disease_namespace.doc(description="Récupère toutes les maladies.")
+    @jwt_required()
+    @disease_namespace.doc(security='Bearer', description="Récupère toutes les maladies.")
     @disease_namespace.marshal_list_with(disease_model)
     def get(self):
         """
@@ -236,7 +244,8 @@ class DiseaseById(Resource):
     """
     Classe pour récupérer, mettre à jour ou supprimer une maladie par son ID.
     """
-    @disease_namespace.doc(description="Récupère une maladie par ID.")
+    @jwt_required()
+    @disease_namespace.doc(security='Bearer', description="Récupère une maladie par ID.")
     @disease_namespace.marshal_with(disease_model)
     def get(self, disease_id):
         """
@@ -251,7 +260,8 @@ class DiseaseById(Resource):
             disease_namespace.abort(status_code, response.get("error", "Erreur inconnue"))
         return response
 
-    @disease_namespace.doc(description="Met à jour une maladie existante.")
+    @jwt_required()
+    @disease_namespace.doc(security='Bearer', description="Met à jour une maladie existante.")
     @disease_namespace.expect(disease_model)
     def put(self, disease_id):
         """
@@ -266,7 +276,8 @@ class DiseaseById(Resource):
             disease_namespace.abort(status_code, response.get("error", "Erreur inconnue"))
         return response, status_code
 
-    @disease_namespace.doc(description="Supprime une maladie par ID.")
+    @jwt_required()
+    @disease_namespace.doc(security='Bearer', description="Supprime une maladie par ID.")
     def delete(self, disease_id):
         """
         Supprime une maladie spécifique à partir de son ID.
@@ -285,7 +296,8 @@ class DiseaseByName(Resource):
     """
     Classe pour récupérer une maladie par son nom.
     """
-    @disease_namespace.doc(description="Récupère une maladie par nom.")
+    @jwt_required()
+    @disease_namespace.doc(security='Bearer', description="Récupère une maladie par nom.")
     @disease_namespace.marshal_with(disease_model)
     def get(self, disease_name):
         """
@@ -305,7 +317,8 @@ class DiseasePost(Resource):
     """
     Classe pour créer une nouvelle maladie.
     """
-    @disease_namespace.doc(description="Crée une nouvelle maladie.")
+    @jwt_required()
+    @disease_namespace.doc(security='Bearer', description="Crée une nouvelle maladie.")
     @disease_namespace.expect(disease_model)
     def post(self):
         """

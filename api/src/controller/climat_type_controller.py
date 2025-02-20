@@ -24,6 +24,7 @@ Modules utilisés :
 
 from flask import Blueprint, jsonify, request
 from flask_restx import Resource, fields, Namespace
+from flask_jwt_extended import jwt_required
 import psycopg2.extras
 from psycopg2 import IntegrityError
 from connect_db import DBConnection
@@ -39,6 +40,7 @@ climat_type_model = climat_type_namespace.model('ClimatType', {
 })
 
 @climat_type_controller.route('/climat_types', methods=['GET'])
+@jwt_required()
 def get_all_climat_types():
     """
     Récupère tous les types de climat de la base de données.
@@ -56,6 +58,7 @@ def get_all_climat_types():
         return jsonify({"error": str(e)}), 500
 
 @climat_type_controller.route('/climat_type/<int:climat_type_id>', methods=['GET'])
+@jwt_required()
 def get_climat_type_by_id(climat_type_id):
     """
     Récupère un type de climat spécifique par son ID.
@@ -73,6 +76,7 @@ def get_climat_type_by_id(climat_type_id):
         return jsonify({"error": str(e)}), 500
 
 @climat_type_controller.route('/climat_type/name/<string:climat_type_name>', methods=['GET'])
+@jwt_required()
 def get_climat_type_by_name(climat_type_name):
     """
     Récupère un type de climat spécifique par son nom.
@@ -92,6 +96,7 @@ def get_climat_type_by_name(climat_type_name):
         return jsonify({"error": str(e)}), 500
 
 @climat_type_controller.route('/climat_type', methods=['POST'])
+@jwt_required()
 def create_climat_type():
     """
     Crée un nouveau type de climat dans la base de données.
@@ -121,6 +126,7 @@ def create_climat_type():
         return jsonify({"error": str(e)}), 500
 
 @climat_type_controller.route('/climat_type/<int:climat_type_id>', methods=['PUT'])
+@jwt_required()
 def update_climat_type(climat_type_id):
     """
     Met à jour un type de climat spécifique par son ID.
@@ -152,6 +158,7 @@ def update_climat_type(climat_type_id):
         return jsonify({"error": str(e)}), 500
 
 @climat_type_controller.route('/climat_type/<int:climat_type_id>', methods=['DELETE'])
+@jwt_required()
 def delete_climat_type(climat_type_id):
     """
     Supprime un type de climat spécifique par son ID.
@@ -180,7 +187,8 @@ class ClimatTypes(Resource):
     """
     Classe API pour récupérer tous les types de climat.
     """
-    @climat_type_namespace.doc(description="Récupère tous les types de climat.")
+    @jwt_required()
+    @climat_type_namespace.doc(security="Bearer", description="Récupère tous les types de climat.")
     @climat_type_namespace.marshal_list_with(climat_type_model)
     def get(self):
         """
@@ -199,7 +207,8 @@ class ClimatTypePost(Resource):
     """
     Classe API pour créer un nouveau type de climat.
     """
-    @climat_type_namespace.doc(description="Crée un type de climat.")
+    @jwt_required()
+    @climat_type_namespace.doc(security="Bearer", description="Crée un type de climat.")
     @climat_type_namespace.expect(climat_type_model)
     def post(self):
         """
@@ -218,7 +227,8 @@ class ClimatTypeById(Resource):
     """
     Classe API pour récupérer, mettre à jour et supprimer un type de climat par son ID.
     """
-    @climat_type_namespace.doc(description="Récupère un type de climat par ID.")
+    @jwt_required()
+    @climat_type_namespace.doc(security="Bearer", description="Récupère un type de climat par ID.")
     @climat_type_namespace.marshal_with(climat_type_model)
     def get(self, climat_type_id):
         """
@@ -232,7 +242,8 @@ class ClimatTypeById(Resource):
             climat_type_namespace.abort(status_code, response.get_json().get("error", "Erreur inconnue"))
         return response.get_json()
 
-    @climat_type_namespace.doc(description="Met à jour un type de climat.")
+    @jwt_required()
+    @climat_type_namespace.doc(security="Bearer", description="Met à jour un type de climat.")
     @climat_type_namespace.expect(climat_type_model)
     def put(self, climat_type_id):
         """
@@ -247,7 +258,8 @@ class ClimatTypeById(Resource):
             climat_type_namespace.abort(status_code, response.get_json().get("error", "Erreur inconnue"))
         return response.get_json(), status_code
 
-    @climat_type_namespace.doc(description="Supprime un type de climat.")
+    @jwt_required()
+    @climat_type_namespace.doc(security="Bearer", description="Supprime un type de climat.")
     def delete(self, climat_type_id):
         """
         Supprime un type de climat spécifique par son ID.
@@ -266,7 +278,8 @@ class ClimatTypeByName(Resource):
     """
     Classe API pour récupérer un type de climat par son nom.
     """
-    @climat_type_namespace.doc(description="Récupère un type de climat par nom.")
+    @jwt_required()
+    @climat_type_namespace.doc(security="Bearer", description="Récupère un type de climat par nom.")
     @climat_type_namespace.marshal_with(climat_type_model)
     def get(self, climat_type_name):
         """
